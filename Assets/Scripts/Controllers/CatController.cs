@@ -7,6 +7,7 @@ public class CatController : MonoBehaviour
     string catName;
     Sprite coat;
     
+    
 
     void Start()
     {
