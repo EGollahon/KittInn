@@ -1,17 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class TimeManager : MonoBehaviour
 {
-    static float time = 7.0f;
-    static TimeOfDay timeOfDay = TimeOfDay.Day;
+    public static float time = 7.0f;
+    public static string timeString = "7:00 AM";
+    public static TimeOfDay timeOfDay = TimeOfDay.Day;
     static float secondTimer = 0.0f;
-    static float lengthOfQuarterHour = 5.0f;
+    static float lengthOfQuarterHour = 0.1f;
+
+    public GameObject timeDisplayReference;
+    TextMeshProUGUI timeDisplay;
 
     void Start()
     {
-        Debug.Log(time);
+        timeDisplay = timeDisplayReference.GetComponent<TextMeshProUGUI>();
         secondTimer = lengthOfQuarterHour;
     }
 
@@ -34,9 +40,38 @@ public class TimeManager : MonoBehaviour
                     timeOfDay = TimeOfDay.Night;
                 }
 
-                Debug.Log(time);
+                TranslateTime();
                 secondTimer = lengthOfQuarterHour;
             }
         }
+    }
+
+    void TranslateTime() {
+        string hour = "";
+        string minutes = "";
+        string ampm = "";
+
+        if (Mathf.Floor(time) == 0.0f) {
+            hour = "12";
+            ampm = "AM";
+        } else if (Mathf.Floor(time) == 12.0f) {
+            hour = "12";
+            ampm = "PM";
+        } else if (Mathf.Floor(time) > 12.0f) {
+            hour = Mathf.Floor(time - 12).ToString();
+            ampm = "PM";
+        } else {
+            hour = Mathf.Floor(time).ToString();
+            ampm = "AM";
+        }
+
+        if ((60 * (time - Mathf.Floor(time))) == 0) {
+            minutes = "00";
+        } else {
+            minutes = (60 * (time - Mathf.Floor(time))).ToString();
+        }
+
+        timeString = hour + ":" + minutes + " " + ampm;
+        timeDisplay.text = timeString;
     }
 }
