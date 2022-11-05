@@ -1,13 +1,13 @@
 using UnityEngine;
 
-enum TimeOfDay
+public enum TimeOfDay
 {
     Day,
     Evening,
     Night
 }
 
-enum Personality {
+public enum Personality {
     Agreeable,
     Picky,
     Tidy,
@@ -15,14 +15,25 @@ enum Personality {
     Adventurous,
     Playful,
     Affectionate,
-    Aloof
+    Aloof,
+    Count
 }
 
-enum Food {
+public enum Food {
+    SavoryKibble,
+    BeefPate,
+    ChickenKibble,
 
+    SeafoodKibble,
+    FlakedTuna,
+    TurkeyInGravy,
+
+    SalmonPate,
+    FlakedFishAndShrimp,
+    FiletMignonKibble
 }
 
-enum Status {
+public enum Status {
     Content,
     Hungry,
     Thirsty,
@@ -30,5 +41,36 @@ enum Status {
     Tired,
     Restless,
     Bored,
-    Lonely
+    Lonely,
+    Upset,
+    Count
+}
+
+public enum Activity {
+    Moving,
+    Eating,
+    Drinking,
+    UsingLitterBox,
+    HavingAnAccident,
+    Sleeping,
+    Exploring,
+    Playing,
+    BeingPetted,
+    BeingCarried,
+    LookingForAttention
+}
+
+public enum CatName {
+    Petunia,
+    Luna,
+    Milo,
+    Oliver,
+    Leo,
+    Loki,
+    Bella,
+    Charlie,
+    Willow,
+    Lucy,
+    Simba,
+    Count
 }
