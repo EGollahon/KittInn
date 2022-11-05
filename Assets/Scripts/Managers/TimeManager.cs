@@ -10,7 +10,7 @@ public class TimeManager : MonoBehaviour
     public static string timeString = "7:00 AM";
     public static TimeOfDay timeOfDay = TimeOfDay.Day;
     static float secondTimer = 0.0f;
-    static float lengthOfQuarterHour = 0.1f;
+    static float lengthOfQuarterHour = 5.0f;
 
     public GameObject timeDisplayReference;
     TextMeshProUGUI timeDisplay;
@@ -18,6 +18,7 @@ public class TimeManager : MonoBehaviour
     void Start()
     {
         timeDisplay = timeDisplayReference.GetComponent<TextMeshProUGUI>();
+        TranslateTime();
         secondTimer = lengthOfQuarterHour;
     }
 
