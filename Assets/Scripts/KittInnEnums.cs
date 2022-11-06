@@ -47,6 +47,7 @@ public enum Status {
 }
 
 public enum Activity {
+    Waiting,
     Moving,
     Eating,
     Drinking,
