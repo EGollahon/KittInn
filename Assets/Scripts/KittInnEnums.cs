@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum TimeOfDay
 {
+    Morning,
     Day,
     Evening,
     Night
@@ -12,10 +13,8 @@ public enum Personality {
     Picky,
     Tidy,
     Sleepy,
-    Adventurous,
     Playful,
     Affectionate,
-    Aloof,
     Count
 }
 
@@ -25,12 +24,8 @@ public enum Food {
     ChickenKibble,
 
     SeafoodKibble,
-    FlakedTuna,
-    TurkeyInGravy,
-
     SalmonPate,
-    FlakedFishAndShrimp,
-    FiletMignonKibble
+    TurkeyInGravy,
 }
 
 public enum Status {
@@ -39,10 +34,8 @@ public enum Status {
     Thirsty,
     Disgusted,
     Tired,
-    Restless,
     Bored,
     Lonely,
-    Upset,
     Count
 }
 
@@ -54,7 +47,6 @@ public enum Activity {
     UsingLitterBox,
     HavingAnAccident,
     Sleeping,
-    Exploring,
     Playing,
     BeingPetted,
     BeingCarried,
@@ -72,6 +64,28 @@ public enum CatName {
     Charlie,
     Willow,
     Lucy,
-    Simba,
+    Daisy,
+    Gracie,
+    Rosie,
+    Kiki,
+    Pumpkin,
+    Mocha,
+    Mittens,
+    Boo,
+    Momo,
+    Gizmo,
+    Boots,
+    Goose,
+    Remi,
+    Sunny,
+    Nugget,
+    Tiptoe,
+    Peaches,
+    Biscuit,
+    Tofu,
+    Sushi,
+    Oreo,
+    Mochi,
+    Honey,
     Count
 }
