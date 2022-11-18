@@ -94,9 +94,6 @@ public class CatController : MonoBehaviour
                         case Status.Tired:
                             activity = Activity.Sleeping;
                             break;
-                        case Status.Restless:
-                            activity = Activity.Exploring;
-                            break;
                         case Status.Bored:
                             activity = Activity.Playing;
                             break;
@@ -215,7 +212,6 @@ public class CatController : MonoBehaviour
 
         if (
             activity == Activity.Sleeping
-            || activity == Activity.Exploring
             || activity == Activity.Playing
             || activity == Activity.BeingPetted
         ) {
@@ -241,16 +237,12 @@ public class CatController : MonoBehaviour
 
     public void PickCatUp()
     {
-        if (personality == Personality.Aloof) {
-            status = Status.Upset;
-        }
+
     }
 
     public void PutCatDown()
     {
-        if (personality == Personality.Aloof) {
-            status = Status.Content;
-        }
+
     }
 
     public void IntializeCat(

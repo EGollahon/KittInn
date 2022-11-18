@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 6b96f33aab814cc02b8a99ebad3d309a
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Unkempt
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 59d6921f2cab40dd8a749aea4acc3891, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

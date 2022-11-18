@@ -18,6 +18,10 @@ public enum Personality {
     Count
 }
 
+public enum CoatColor {
+    Count
+}
+
 public enum Food {
     SavoryKibble,
     BeefPate,
