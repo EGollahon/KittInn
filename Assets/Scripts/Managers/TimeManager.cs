@@ -8,16 +8,20 @@ public class TimeManager : MonoBehaviour
 {
     public static float time = 7.0f;
     public static string timeString = "7:00 AM";
-    public static TimeOfDay timeOfDay = TimeOfDay.Day;
+    public static TimeOfDay timeOfDay = TimeOfDay.Morning;
     static float secondTimer = 0.0f;
     static float lengthOfQuarterHour = 2.0f;
 
     public GameObject timeDisplayReference;
     TextMeshProUGUI timeDisplay;
 
+    public GameObject timeOfDayReference;
+    TextMeshProUGUI timeOfDayDisplay;
+
     void Start()
     {
         timeDisplay = timeDisplayReference.GetComponent<TextMeshProUGUI>();
+        timeOfDayDisplay = timeOfDayReference.GetComponent<TextMeshProUGUI>();
         TranslateTime();
         secondTimer = lengthOfQuarterHour;
     }
@@ -33,7 +37,9 @@ public class TimeManager : MonoBehaviour
                     time = 0.0f;
                 }
 
-                if (time > 6.75f && time < 18.0f) {
+                if (time > 6.75f && time < 12.0f) {
+                    timeOfDay = TimeOfDay.Morning;
+                } else if (time >= 12.0f && time < 18.0f) {
                     timeOfDay = TimeOfDay.Day;
                 } else if (time >= 18.0f && time < 23.25f) {
                     timeOfDay = TimeOfDay.Evening;
@@ -74,5 +80,14 @@ public class TimeManager : MonoBehaviour
 
         timeString = hour + ":" + minutes + " " + ampm;
         timeDisplay.text = timeString;
+        timeOfDayDisplay.text = timeOfDay.ToString();
+    }
+
+    public static void PauseTime() {
+        Time.timeScale = 0.0f;
+    }
+
+    public static void UnpauseTime() {
+        Time.timeScale = 1.0f;
     }
 }

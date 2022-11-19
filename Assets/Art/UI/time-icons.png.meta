@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4b9f0c2d69be721569282bf126b67459
+guid: 529cc419037bbfcb189327e1b2acec2d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,85 +117,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: doors_0
+      name: time-icons_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 64
-        height: 96
-      alignment: 9
-      pivot: {x: 0.5234375, y: 0.083333336}
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 83189a4db16a14692afc95e103a2298e
-      internalID: -1826407503
+      spriteID: 9617cfd2b771e3aa1a4f5e615d5d1dc9
+      internalID: 590663774
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: doors_1
+      name: time-icons_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f18886256e8c7b80da77cc13c7371a32
+      internalID: 431860176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: time-icons_2
       rect:
         serializedVersion: 2
         x: 64
         y: 0
-        width: 64
-        height: 96
-      alignment: 9
-      pivot: {x: 0.5234375, y: 0.083333336}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b56daa07b27d04beeb530bb325b5a024
-      internalID: 445916672
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: doors_2
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 64
-        height: 96
-      alignment: 9
-      pivot: {x: 0.78125, y: 0.15468751}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6454434646f30298bb6f78332dbe7432
-      internalID: 1131114455
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: doors_3
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 64
-        height: 96
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9848f95e14c5ccd6da946f16a7723fd7
-      internalID: -1735106161
+      spriteID: 76f2f953ac129d3838d58f1d39eeae9f
+      internalID: -331662539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: time-icons_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ed202c53dd2af5f70bafe5c6e5f1e62c
+      internalID: 2065349629
       vertices: []
       indices: 
       edges: []
@@ -211,10 +211,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      doors_1: 445916672
-      doors_0: -1826407503
-      doors_3: -1735106161
-      doors_2: 1131114455
+      time-icons_0: 590663774
+      time-icons_2: -331662539
+      time-icons_3: 2065349629
+      time-icons_1: 431860176
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

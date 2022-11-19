@@ -8,6 +8,19 @@ public enum TimeOfDay
     Night
 }
 
+public enum NotebookTab
+{
+    Handbook,
+    Inventory,
+    Quests,
+    EditRoom
+}
+
+public enum ComputerTab
+{
+    
+}
+
 public enum Personality {
     Agreeable,
     Picky,

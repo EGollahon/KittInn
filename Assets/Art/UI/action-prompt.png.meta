@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4b9f0c2d69be721569282bf126b67459
+guid: 8b1153a1b759e6ebc84c3046eb302676
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,85 +117,64 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: doors_0
+      name: action-prompt_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 64
-        height: 96
-      alignment: 9
-      pivot: {x: 0.5234375, y: 0.083333336}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 83189a4db16a14692afc95e103a2298e
-      internalID: -1826407503
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: doors_1
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 0
-        width: 64
-        height: 96
-      alignment: 9
-      pivot: {x: 0.5234375, y: 0.083333336}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b56daa07b27d04beeb530bb325b5a024
-      internalID: 445916672
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: doors_2
-      rect:
-        serializedVersion: 2
-        x: 128
-        y: 0
-        width: 64
-        height: 96
-      alignment: 9
-      pivot: {x: 0.78125, y: 0.15468751}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6454434646f30298bb6f78332dbe7432
-      internalID: 1131114455
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: doors_3
-      rect:
-        serializedVersion: 2
-        x: 192
-        y: 0
-        width: 64
-        height: 96
+        width: 48
+        height: 48
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9848f95e14c5ccd6da946f16a7723fd7
-      internalID: -1735106161
+      spriteID: 1d49b38e7bbcb43eaad1ba5376185fca
+      internalID: 1286611471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: action-prompt_1
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4351c589bf367f522ae6ed8472020284
+      internalID: 1370782874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: action-prompt_2
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 48
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2a96da037fc3bdea0bef9c51635c1ac5
+      internalID: 405659699
       vertices: []
       indices: 
       edges: []
@@ -211,10 +190,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      doors_1: 445916672
-      doors_0: -1826407503
-      doors_3: -1735106161
-      doors_2: 1131114455
+      action-prompt_2: 405659699
+      action-prompt_0: 1286611471
+      action-prompt_1: 1370782874
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
