@@ -12,8 +12,7 @@ public enum NotebookTab
 {
     Handbook,
     Inventory,
-    Quests,
-    EditRoom
+    Quests
 }
 
 public enum ComputerTab
@@ -33,6 +32,12 @@ public enum Personality {
 
 public enum CoatColor {
     Count
+}
+
+public enum InventoryType {
+    Food,
+    Furniture,
+    Toy
 }
 
 public enum Food {
