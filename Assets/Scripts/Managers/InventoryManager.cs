@@ -22,11 +22,21 @@ public class InventoryManager : MonoBehaviour
 
     void Update()
     {
-        // also check if in an editable room
-        if (Input.GetKeyDown("x") && NotebookManager.currentTab == NotebookTab.Inventory && selectedItem.type != InventoryType.Food)
+        if (
+            Input.GetKeyDown("x")
+            && NotebookManager.currentTab == NotebookTab.Inventory
+            && selectedItem.type != InventoryType.Food
+            && PlayerController.currentRoom != Room.Other
+        )
         {
             NotebookManager.CloseNotebook();
+            TimeManager.EnterEditMode();
             mouseHighlight.SetActive(true);
+            bool isBed = false;
+            if (selectedItem.type == InventoryType.Bed) {
+                isBed = true;
+            }
+            mouseHighlight.GetComponent<MouseHighlightController>().SetHighlightProps(isBed, selectedItem);
         }
     }
 
@@ -65,11 +75,16 @@ public class InventoryManager : MonoBehaviour
             itemDetailReference.transform.Find("Level Star").gameObject.GetComponent<Image>().sprite = twoStarSprite;
         }
 
-        // also add condition to check if in an editable room
-        if (item.type != InventoryType.Food) {
+        if (item.type != InventoryType.Food && PlayerController.currentRoom != Room.Other) {
             itemDetailReference.transform.Find("Place Prompt").gameObject.SetActive(true);
         } else {
             itemDetailReference.transform.Find("Place Prompt").gameObject.SetActive(false);
+        }
+    }
+
+    public void RefreshInventoryDetail() {
+        if (selectedItem.itemName != "") {
+            ShowInventoryDetail(selectedItem);
         }
     }
 }

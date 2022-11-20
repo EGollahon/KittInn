@@ -11,6 +11,7 @@ public class TimeManager : MonoBehaviour
     public static TimeOfDay timeOfDay = TimeOfDay.Morning;
     static float secondTimer = 0.0f;
     static float lengthOfQuarterHour = 2.0f;
+    static bool isEditMode = false;
 
     public GameObject timeDisplayReference;
     TextMeshProUGUI timeDisplay;
@@ -28,7 +29,7 @@ public class TimeManager : MonoBehaviour
 
     void Update()
     {
-        if (secondTimer >= 0) {
+        if (secondTimer >= 0 && !isEditMode) {
             secondTimer -= Time.deltaTime;
             if (secondTimer < 0) {
                 if (time < 23.75f) {
@@ -89,5 +90,13 @@ public class TimeManager : MonoBehaviour
 
     public static void UnpauseTime() {
         Time.timeScale = 1.0f;
+    }
+
+    public static void EnterEditMode() {
+        isEditMode = true;
+    }
+
+    public static void ExitEditMode() {
+        isEditMode = false;
     }
 }

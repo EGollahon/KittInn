@@ -8,6 +8,13 @@ public enum TimeOfDay
     Night
 }
 
+public enum Room
+{
+    Library,
+    Sunroom,
+    Other
+}
+
 public enum NotebookTab
 {
     Handbook,
@@ -36,7 +43,8 @@ public enum CoatColor {
 
 public enum InventoryType {
     Food,
-    Furniture,
+    Essential,
+    Bed,
     Toy
 }
 

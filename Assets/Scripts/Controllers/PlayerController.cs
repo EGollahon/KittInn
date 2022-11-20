@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     Animator playerAnimator;
     float walkSpeed = 3.0f;
     Vector2 movement = new Vector2(0, 0);
+    public static Room currentRoom;
 
     void Start()
     {
@@ -45,6 +46,20 @@ public class PlayerController : MonoBehaviour
             }
         } else {
             playerAnimator.SetBool("IsWalking", false);
+        }
+
+        if (
+            transform.position.x > RoomManager.libraryLeftX - 0.5f && transform.position.x < RoomManager.libraryRightX + 0.5f
+            && transform.position.y > RoomManager.libraryBottomY - 0.5f && transform.position.y < RoomManager.libraryTopY + 0.5f
+        ) {
+            currentRoom = Room.Library;
+        } else if (
+            transform.position.x > RoomManager.sunroomLeftX - 0.5f && transform.position.x < RoomManager.sunroomRightX + 0.5f
+            && transform.position.y > RoomManager.sunroomBottomY - 0.5f && transform.position.y < RoomManager.sunroomTopY + 0.5f
+        ) {
+            currentRoom = Room.Sunroom;
+        } else {
+            currentRoom = Room.Other;
         }
     }
 

@@ -8,6 +8,7 @@ public class NotebookManager : MonoBehaviour
 {
     public static bool isNotebookOpen = false;
     public static NotebookTab currentTab = NotebookTab.Handbook;
+    public GameObject parentReference;
 
     public GameObject notebookReference;
     public GameObject notebookPromptReference;
@@ -33,6 +34,7 @@ public class NotebookManager : MonoBehaviour
                 notebookReference.SetActive(true);
                 isNotebookOpen = true;
                 notebookPromptDisplay.text = "Close Notebook";
+                parentReference.transform.Find("Inventory Manager").GetComponent<InventoryManager>().RefreshInventoryDetail();
             } else {
                 TimeManager.UnpauseTime();
                 notebookReference.SetActive(false);
@@ -41,7 +43,7 @@ public class NotebookManager : MonoBehaviour
             }
         }
 
-        if ((isNotebookOpen && !gameObject.activeInHierarchy) || (!isNotebookOpen && gameObject.activeInHierarchy))
+        if ((isNotebookOpen && !notebookReference.activeInHierarchy) || (!isNotebookOpen && notebookReference.activeInHierarchy))
         {
             if (isNotebookOpen)
             {
@@ -49,6 +51,7 @@ public class NotebookManager : MonoBehaviour
                 notebookReference.SetActive(true);
                 isNotebookOpen = true;
                 notebookPromptDisplay.text = "Close Notebook";
+                parentReference.transform.Find("Inventory Manager").GetComponent<InventoryManager>().RefreshInventoryDetail();
             } else {
                 TimeManager.UnpauseTime();
                 notebookReference.SetActive(false);
