@@ -11,14 +11,15 @@ public class NotebookManager : MonoBehaviour
     public GameObject parentReference;
 
     public GameObject notebookReference;
-    public GameObject notebookPromptReference;
-    TextMeshProUGUI notebookPromptDisplay;
     public Sprite selectedTabSprite;
     public Sprite unselectedTabSprite;
 
+    public GameObject promptManagerReference;
+    PromptManager promptManager;
+
     void Start()
     {
-        notebookPromptDisplay = notebookPromptReference.GetComponent<TextMeshProUGUI>();
+        promptManager = promptManagerReference.GetComponent<PromptManager>();
         notebookReference.transform.Find("Handbook Tab").gameObject.GetComponent<Button>().onClick.AddListener(() => SwitchToTab(NotebookTab.Handbook));
         notebookReference.transform.Find("Inventory Tab").gameObject.GetComponent<Button>().onClick.AddListener(() => SwitchToTab(NotebookTab.Inventory));
         notebookReference.transform.Find("Quests Tab").gameObject.GetComponent<Button>().onClick.AddListener(() => SwitchToTab(NotebookTab.Quests));
@@ -26,20 +27,25 @@ public class NotebookManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("z"))
+        if (Input.GetKeyDown("z")
+        && (PromptManager.currentActionSet == AvailableActionSet.OpenNotebookPrompt
+            || PromptManager.currentActionSet == AvailableActionSet.CloseNotebookPrompt
+            || PromptManager.currentActionSet == AvailableActionSet.CatRoomsPrompts
+            || PromptManager.currentActionSet == AvailableActionSet.CatRoomsPromptsWithCats)
+        )
         {
             if (!isNotebookOpen)
             {
                 TimeManager.PauseTime();
                 notebookReference.SetActive(true);
                 isNotebookOpen = true;
-                notebookPromptDisplay.text = "Close Notebook";
+                promptManager.CloseNotebookPrompt();
                 parentReference.transform.Find("Inventory Manager").GetComponent<InventoryManager>().RefreshInventoryDetail();
             } else {
                 TimeManager.UnpauseTime();
                 notebookReference.SetActive(false);
                 isNotebookOpen = false;
-                notebookPromptDisplay.text = "Open Notebook";
+                promptManager.OpenNotebookPrompt();
             }
         }
 
@@ -50,13 +56,12 @@ public class NotebookManager : MonoBehaviour
                 TimeManager.PauseTime();
                 notebookReference.SetActive(true);
                 isNotebookOpen = true;
-                notebookPromptDisplay.text = "Close Notebook";
+                promptManager.CloseNotebookPrompt();
                 parentReference.transform.Find("Inventory Manager").GetComponent<InventoryManager>().RefreshInventoryDetail();
             } else {
                 TimeManager.UnpauseTime();
                 notebookReference.SetActive(false);
                 isNotebookOpen = false;
-                notebookPromptDisplay.text = "Open Notebook";
             }
         }
     }

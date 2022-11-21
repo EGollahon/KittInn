@@ -9,8 +9,12 @@ public class MouseHighlightController : MonoBehaviour
 
     Animator highlightAnimator;
 
+    public GameObject promptManagerReference;
+    PromptManager promptManager;
+
     void Start()
     {
+        promptManager = promptManagerReference.GetComponent<PromptManager>();
         highlightAnimator = GetComponent<Animator>();
     }
 
@@ -29,35 +33,33 @@ public class MouseHighlightController : MonoBehaviour
             }
             
             if (PlayerController.currentRoom == Room.Library) {
-                roundedPosition.x += 0.5f;
-                roundedPosition.y += 0.8f;
+                roundedPosition.y += 0.3f;
 
-                if (roundedPosition.x > RoomManager.libraryRightX) {
-                    roundedPosition.x = RoomManager.libraryRightX;
-                } else if (roundedPosition.x < RoomManager.libraryLeftX) {
-                    roundedPosition.x = RoomManager.libraryLeftX;
+                if (roundedPosition.x > RoomManager.libraryRightX - 0.5f) {
+                    roundedPosition.x = RoomManager.libraryRightX - 0.5f;
+                } else if (roundedPosition.x < RoomManager.libraryLeftX + 0.5f) {
+                    roundedPosition.x = RoomManager.libraryLeftX + 0.5f;
                 }
 
-                if (roundedPosition.y > RoomManager.libraryTopY) {
-                    roundedPosition.y = RoomManager.libraryTopY;
-                } else if (roundedPosition.y < RoomManager.libraryBottomY) {
-                    roundedPosition.y = RoomManager.libraryBottomY;
+                if (roundedPosition.y > RoomManager.libraryTopY - 0.5f) {
+                    roundedPosition.y = RoomManager.libraryTopY - 0.5f;
+                } else if (roundedPosition.y < RoomManager.libraryBottomY + 0.5f) {
+                    roundedPosition.y = RoomManager.libraryBottomY + 0.5f;
                 }
             } else if (PlayerController.currentRoom == Room.Sunroom) {
-                // redo values
-                roundedPosition.x -= 0.41f;
-                roundedPosition.y += 0.325f;
+                roundedPosition.x -= 0.44f;
+                roundedPosition.y += 0.3f;
 
-                if (roundedPosition.x > RoomManager.sunroomRightX - 0.53f) {
-                    roundedPosition.x = RoomManager.sunroomRightX - 0.53f;
-                } else if (roundedPosition.x < RoomManager.sunroomLeftX + 0.53f) {
-                    roundedPosition.x = RoomManager.sunroomLeftX + 0.53f;
+                if (roundedPosition.x > RoomManager.sunroomRightX - 0.5f) {
+                    roundedPosition.x = RoomManager.sunroomRightX - 0.5f;
+                } else if (roundedPosition.x < RoomManager.sunroomLeftX + 0.5f) {
+                    roundedPosition.x = RoomManager.sunroomLeftX + 0.5f;
                 }
 
-                if (roundedPosition.y > RoomManager.sunroomTopY - 0.525f) {
-                    roundedPosition.y = RoomManager.sunroomTopY - 0.525f;
-                } else if (roundedPosition.y < RoomManager.sunroomBottomY + 0.525f) {
-                    roundedPosition.y = RoomManager.sunroomBottomY + 0.525f;
+                if (roundedPosition.y > RoomManager.sunroomTopY - 0.5f) {
+                    roundedPosition.y = RoomManager.sunroomTopY - 0.5f;
+                } else if (roundedPosition.y < RoomManager.sunroomBottomY + 0.5f) {
+                    roundedPosition.y = RoomManager.sunroomBottomY + 0.5f;
                 }
             } else {
                 TimeManager.ExitEditMode();
@@ -95,12 +97,24 @@ public class MouseHighlightController : MonoBehaviour
                     roundedPosition.y = RoomManager.sunroomBottomY;
                 }
             } else {
+                promptManager.OpenNotebookPrompt();
                 TimeManager.ExitEditMode();
                 gameObject.SetActive(false);
             }
         }
 
         transform.position = roundedPosition;
+
+        if (
+            Input.GetKeyDown("z")
+            && (PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts
+                || PromptManager.currentActionSet == AvailableActionSet.EditPlacePrompts)
+        )
+        {
+            promptManager.OpenNotebookPrompt();
+            TimeManager.ExitEditMode();
+            gameObject.SetActive(false);
+        }
     }
 
     public void SetHighlightProps(bool isLarge, InventoryItemClass item)

@@ -14,6 +14,9 @@ public class RoomManager : MonoBehaviour
     public static float sunroomTopY = 8.8f;
     public static float sunroomBottomY = 1.8f;
 
+    public List<GameObject> libraryItems = new List<GameObject>();
+    public List<GameObject> sunroomItems = new List<GameObject>();
+
     void Start()
     {
         

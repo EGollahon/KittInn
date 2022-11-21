@@ -15,11 +15,31 @@ public enum Room
     Other
 }
 
+public enum AvailableActionSet
+{
+    CatRoomsPrompts,
+    CatRoomsPromptsWithCats,
+    OpenNotebookPrompt,
+    CloseNotebookPrompt,
+    EditPlacePrompts,
+    EditPickUpPrompts,
+    PlacePrompt
+}
+
 public enum NotebookTab
 {
     Handbook,
     Inventory,
     Quests
+}
+
+public enum InventoryType {
+    Food,
+    FoodDish,
+    WaterDish,
+    LitterBox,
+    Bed,
+    Toy
 }
 
 public enum ComputerTab
@@ -39,13 +59,6 @@ public enum Personality {
 
 public enum CoatColor {
     Count
-}
-
-public enum InventoryType {
-    Food,
-    Essential,
-    Bed,
-    Toy
 }
 
 public enum Food {

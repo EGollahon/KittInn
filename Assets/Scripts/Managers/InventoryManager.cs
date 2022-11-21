@@ -9,14 +9,18 @@ public class InventoryManager : MonoBehaviour
     public InventoryItemClass selectedItem;
     public GameObject inventoryReference;
     public GameObject itemDetailReference;
-    public List<GameObject> inventorySlots;
+    public List<GameObject> inventorySlots = new List<GameObject>();
     public List<InventoryItemClass> inventory = new List<InventoryItemClass>();
     public Sprite oneStarSprite;
     public Sprite twoStarSprite;
     public GameObject mouseHighlight;
+    
+    public GameObject promptManagerReference;
+    PromptManager promptManager;
 
     void Start()
     {
+        promptManager = promptManagerReference.GetComponent<PromptManager>();
         RefreshInventory();
     }
 
@@ -30,6 +34,7 @@ public class InventoryManager : MonoBehaviour
         )
         {
             NotebookManager.CloseNotebook();
+            promptManager.EditPlacePrompts();
             TimeManager.EnterEditMode();
             mouseHighlight.SetActive(true);
             bool isBed = false;
@@ -66,8 +71,13 @@ public class InventoryManager : MonoBehaviour
         itemDetailReference.SetActive(true);
 
         itemDetailReference.transform.Find("Name Quantity").gameObject.GetComponent<TextMeshProUGUI>().text = item.itemName + " x" + item.quantity.ToString();
-        itemDetailReference.transform.Find("Type").gameObject.GetComponent<TextMeshProUGUI>().text = item.type.ToString();
         itemDetailReference.transform.Find("Picture").gameObject.GetComponent<Image>().sprite = item.sprite;
+
+        if (item.type == InventoryType.FoodDish || item.type == InventoryType.WaterDish || item.type == InventoryType.LitterBox) {
+            itemDetailReference.transform.Find("Type").gameObject.GetComponent<TextMeshProUGUI>().text = "Essential";
+        } else {
+            itemDetailReference.transform.Find("Type").gameObject.GetComponent<TextMeshProUGUI>().text = item.type.ToString();
+        }
 
         if (item.level == 1) {
             itemDetailReference.transform.Find("Level Star").gameObject.GetComponent<Image>().sprite = oneStarSprite;
