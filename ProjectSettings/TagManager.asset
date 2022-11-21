@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bea
+  - Wall
+  - Door
+  - Item
   layers:
   - Default
   - TransparentFX
@@ -12,7 +15,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Block Entry Point
   - 
   - 
   - 

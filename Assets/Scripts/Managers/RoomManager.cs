@@ -14,8 +14,8 @@ public class RoomManager : MonoBehaviour
     public static float sunroomTopY = 8.8f;
     public static float sunroomBottomY = 1.8f;
 
-    public List<GameObject> libraryItems = new List<GameObject>();
-    public List<GameObject> sunroomItems = new List<GameObject>();
+    public static List<GameObject> libraryItems = new List<GameObject>();
+    public static List<GameObject> sunroomItems = new List<GameObject>();
 
     void Start()
     {
@@ -25,5 +25,13 @@ public class RoomManager : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public static void AddItemToRoom(GameObject item, Room room) {
+        if (room == Room.Library) {
+            libraryItems.Add(item);
+        } else if (room == Room.Sunroom) {
+            sunroomItems.Add(item);
+        }
     }
 }

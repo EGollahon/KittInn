@@ -4,18 +4,33 @@ using UnityEngine;
 
 public class MouseHighlightController : MonoBehaviour
 {
-    public bool isLargeHighlight;
+    public bool isLarge = false;
+    public bool hasItem = false;
+    public bool isOverlapping = false;
+    public bool isDeactivating = false;
     public InventoryItemClass itemToPlace;
+    public GameObject itemToMove;
+    public List<Vector2> locations = new List<Vector2>();
+    public List<Vector2> entryPoints = new List<Vector2>();
+    public GameObject itemPrefab;
 
     Animator highlightAnimator;
-
+    Rigidbody2D highlightRigidbody;
     public GameObject promptManagerReference;
     PromptManager promptManager;
+    public GameObject inventoryManagerReference;
+    InventoryManager inventoryManager;
 
-    void Start()
+    void Awake()
     {
+        StuffThatShouldWork();
+    }
+
+    void StuffThatShouldWork() {
         promptManager = promptManagerReference.GetComponent<PromptManager>();
+        inventoryManager = inventoryManagerReference.GetComponent<InventoryManager>();
         highlightAnimator = GetComponent<Animator>();
+        highlightRigidbody = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -23,8 +38,150 @@ public class MouseHighlightController : MonoBehaviour
         Vector2 screenPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         Vector2 roundedPosition = new Vector2(Mathf.Round(worldPosition.x), Mathf.Round(worldPosition.y));
+        highlightRigidbody.MovePosition(MoveHighlight(roundedPosition));
 
-        if (isLargeHighlight) {
+        if (
+            Input.GetKeyDown("z")
+            && (PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts
+                || PromptManager.currentActionSet == AvailableActionSet.EditPlacePrompts
+                || PromptManager.currentActionSet == AvailableActionSet.EditCancelPrompt)
+        )
+        {
+            // re-add itemToMove if not null
+            isDeactivating = true;
+            promptManager.OpenNotebookPrompt();
+            TimeManager.ExitEditMode();
+            gameObject.SetActive(false);
+        }
+
+        if (hasItem && !isOverlapping && !isDeactivating) {
+            entryPoints.Clear();
+            locations.Clear();
+
+            // check entry points
+            if (isLarge) {
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y + 0.5f), new Vector2(-1.0f, 0.0f));
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y + 0.5f), new Vector2(0.0f, 1.0f));
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x + 0.5f, highlightRigidbody.position.y + 0.5f), new Vector2(0.0f, 1.0f));
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x + 0.5f, highlightRigidbody.position.y + 0.5f), new Vector2(1.0f, 0.0f));
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y - 0.5f), new Vector2(-1.0f, 0.0f));
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y - 0.5f), new Vector2(0.0f, -1.0f));
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x + 0.5f, highlightRigidbody.position.y - 0.5f), new Vector2(0.0f, -1.0f));
+                CheckEntryPoint(new Vector2(highlightRigidbody.position.x + 0.5f, highlightRigidbody.position.y - 0.5f), new Vector2(1.0f, 0.0f));
+                locations.Add(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y + 0.5f));
+                locations.Add(new Vector2(highlightRigidbody.position.x + 0.5f, highlightRigidbody.position.y + 0.5f));
+                locations.Add(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y - 0.5f));
+                locations.Add(new Vector2(highlightRigidbody.position.x + 0.5f, highlightRigidbody.position.y - 0.5f));
+            } else {
+                Vector2[] pointsToRaycast = {new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, -1.0f), new Vector2(-1.0f, 0.0f)};
+                for (int i = 0; i < pointsToRaycast.Length; i++) {
+                    CheckEntryPoint(highlightRigidbody.position, pointsToRaycast[i]);
+                    locations.Add(highlightRigidbody.position);
+                }
+            }
+
+            if (entryPoints.Count > 0) {
+                promptManager.EditPlacePrompts();
+
+                if (Input.GetKeyDown("x"))
+                {
+                    if (itemToMove == null && itemToPlace != null) {
+                        GameObject newItem = Instantiate(itemPrefab, highlightRigidbody.position, Quaternion.identity);
+                        newItem.GetComponent<ItemController>().InitializeItem(itemToPlace, locations, entryPoints);
+                        itemToMove = newItem;
+                    }
+
+                    if (itemToMove != null) {
+                        if (PlayerController.currentRoom == Room.Library) {
+                            RoomManager.AddItemToRoom(itemToMove, Room.Library);
+                        } else if (PlayerController.currentRoom == Room.Sunroom) {
+                            RoomManager.AddItemToRoom(itemToMove, Room.Sunroom);
+                        }
+
+                        inventoryManager.RemoveInventoryItems(itemToPlace.itemName, 1);
+                    }
+
+                    isDeactivating = true;
+                    promptManager.OpenNotebookPrompt();
+                    TimeManager.ExitEditMode();
+                    gameObject.SetActive(false);
+                }
+            } else {
+                promptManager.EditCancelPrompt();
+            }
+        } else {
+
+        }
+    }
+
+    public void CheckEntryPoint(Vector2 origin, Vector2 direction) {
+        int blockEntryPointLayerIndex = LayerMask.NameToLayer("Block Entry Point");
+        int layerMask = (1 << blockEntryPointLayerIndex);
+        RaycastHit2D hit = Physics2D.Raycast(origin, direction, 1.0f, layerMask);
+        if (hit.collider == null)
+        {
+            entryPoints.Add(new Vector2(
+                origin.x + direction.x,
+                origin.y + direction.y
+            ));
+        }
+    }
+
+    public void SetHighlightProps(InventoryItemClass item)
+    {
+        StuffThatShouldWork();
+        isDeactivating = false;
+
+        itemToPlace = item;
+        itemToMove = null;
+        transform.Find("Item").GetComponent<SpriteRenderer>().sprite = item.sprite;
+        hasItem = true;
+
+        if (item.type == InventoryType.Bed) {
+            isLarge = true;
+            highlightAnimator.SetBool("IsLargeHighlight", true);
+        } else {
+            isLarge = false;
+            highlightAnimator.SetBool("IsLargeHighlight", false);
+        }
+    }
+
+    public void SetHighlightProps(GameObject item)
+    {
+        StuffThatShouldWork();
+        isDeactivating = false;
+
+        itemToPlace = null;
+        itemToMove = item;
+        transform.Find("Item").GetComponent<SpriteRenderer>().sprite = item.GetComponent<ItemController>().sprite;
+        hasItem = true;
+
+        if (item.GetComponent<ItemController>().type == InventoryType.Bed) {
+            isLarge = true;
+            highlightAnimator.SetBool("IsLargeHighlight", true);
+        } else {
+            isLarge = false;
+            highlightAnimator.SetBool("IsLargeHighlight", false);
+        }
+    }
+
+    public void SetHighlightProps()
+    {
+        StuffThatShouldWork();
+        isDeactivating = false;
+
+        itemToPlace = null;
+        itemToMove = null;
+        transform.Find("Item").GetComponent<SpriteRenderer>().sprite = null;
+        hasItem = false;
+        isLarge = false;
+        highlightAnimator.SetBool("IsLargeHighlight", false);
+    }
+
+    Vector2 MoveHighlight(Vector2 position) {
+        Vector2 roundedPosition = position;
+
+        if (isLarge) {
             if (roundedPosition.x % 2 == 0) {
                 roundedPosition.x -= 1.0f;
             }
@@ -103,26 +260,24 @@ public class MouseHighlightController : MonoBehaviour
             }
         }
 
-        transform.position = roundedPosition;
+        return roundedPosition;
+    }
 
-        if (
-            Input.GetKeyDown("z")
-            && (PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts
-                || PromptManager.currentActionSet == AvailableActionSet.EditPlacePrompts)
-        )
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Item")
         {
-            promptManager.OpenNotebookPrompt();
-            TimeManager.ExitEditMode();
-            gameObject.SetActive(false);
+            isOverlapping = true;
+            promptManager.EditCancelPrompt();
         }
     }
 
-    public void SetHighlightProps(bool isLarge, InventoryItemClass item)
+    void OnTriggerExit2D(Collider2D collider)
     {
-        highlightAnimator = GetComponent<Animator>();
-        isLargeHighlight = isLarge;
-        highlightAnimator.SetBool("IsLargeHighlight", isLargeHighlight);
-        itemToPlace = item;
-        transform.Find("Item").GetComponent<SpriteRenderer>().sprite = item.sprite;
+        if (collider.gameObject.tag == "Item")
+        {
+            isOverlapping = false;
+            promptManager.EditPlacePrompts();
+        }
     }
 }

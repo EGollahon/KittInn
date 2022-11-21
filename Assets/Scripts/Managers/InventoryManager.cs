@@ -31,17 +31,14 @@ public class InventoryManager : MonoBehaviour
             && NotebookManager.currentTab == NotebookTab.Inventory
             && selectedItem.type != InventoryType.Food
             && PlayerController.currentRoom != Room.Other
+            && PromptManager.currentActionSet == AvailableActionSet.CloseNotebookPrompt
         )
         {
             NotebookManager.CloseNotebook();
             promptManager.EditPlacePrompts();
             TimeManager.EnterEditMode();
             mouseHighlight.SetActive(true);
-            bool isBed = false;
-            if (selectedItem.type == InventoryType.Bed) {
-                isBed = true;
-            }
-            mouseHighlight.GetComponent<MouseHighlightController>().SetHighlightProps(isBed, selectedItem);
+            mouseHighlight.GetComponent<MouseHighlightController>().SetHighlightProps(selectedItem);
         }
     }
 
@@ -93,8 +90,18 @@ public class InventoryManager : MonoBehaviour
     }
 
     public void RefreshInventoryDetail() {
-        if (selectedItem.itemName != "") {
+        if (selectedItem.itemName != "" && selectedItem.quantity > 0) {
             ShowInventoryDetail(selectedItem);
+        } else {
+            selectedItem = null;
+            itemDetailReference.SetActive(false);
         }
+    }
+
+    public void RemoveInventoryItems(string itemName, int amount) {
+        int index = inventory.FindIndex(element => element.itemName == itemName);
+        inventory[index].quantity--;
+        RefreshInventory();
+        RefreshInventoryDetail();
     }
 }

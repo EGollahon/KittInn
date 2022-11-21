@@ -23,7 +23,8 @@ public enum AvailableActionSet
     CloseNotebookPrompt,
     EditPlacePrompts,
     EditPickUpPrompts,
-    PlacePrompt
+    PlacePrompt,
+    EditCancelPrompt
 }
 
 public enum NotebookTab
