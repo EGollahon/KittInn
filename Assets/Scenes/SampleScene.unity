@@ -3496,6 +3496,7 @@ MonoBehaviour:
     sellCost: 0
     type: 0
   itemToMove: {fileID: 0}
+  hoveredItem: {fileID: 0}
   locations: []
   entryPoints: []
   itemPrefab: {fileID: 867536850892793724, guid: 0dc132ee2303c48e493a10958848d45a, type: 3}
@@ -10850,7 +10851,7 @@ MonoBehaviour:
     type: 2
   - itemName: Wool Ball
     sprite: {fileID: -1291748460, guid: 65c969266fa84eef3a75889df54a2d07, type: 3}
-    quantity: 0
+    quantity: 1
     level: 1
     buyCost: 0
     sellCost: 0

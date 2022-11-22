@@ -8,6 +8,7 @@ public class MouseHighlightController : MonoBehaviour
     public bool hasItem = false;
     public bool isOverlapping = false;
     public bool isDeactivating = false;
+    public bool canPlace = true;
     public InventoryItemClass itemToPlace;
     public GameObject itemToMove;
     public GameObject hoveredItem;
@@ -42,6 +43,7 @@ public class MouseHighlightController : MonoBehaviour
 
     void Update()
     {
+        canPlace = true;
         Vector2 screenPosition = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
         Vector2 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         Vector2 roundedPosition = new Vector2(Mathf.Round(worldPosition.x), Mathf.Round(worldPosition.y));
@@ -64,6 +66,7 @@ public class MouseHighlightController : MonoBehaviour
             gameObject.SetActive(false);
         } else if (Input.GetKeyDown("x") && PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts)
         {
+            canPlace = false;
             PickUpItem();
         } else if (Input.GetKeyDown("q") && PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts)
         {
@@ -88,14 +91,37 @@ public class MouseHighlightController : MonoBehaviour
                 locations.Add(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y - 0.5f));
                 locations.Add(new Vector2(highlightRigidbody.position.x + 0.5f, highlightRigidbody.position.y - 0.5f));
             } else {
+                locations.Add(highlightRigidbody.position);
                 Vector2[] pointsToRaycast = {new Vector2(0.0f, 1.0f), new Vector2(1.0f, 0.0f), new Vector2(0.0f, -1.0f), new Vector2(-1.0f, 0.0f)};
                 for (int i = 0; i < pointsToRaycast.Length; i++) {
                     CheckEntryPoint(highlightRigidbody.position, pointsToRaycast[i]);
-                    locations.Add(highlightRigidbody.position);
                 }
             }
 
-            if (entryPoints.Count > 0) {
+            bool notBlockingEntries = true;
+            List<GameObject> roomToCheck;
+            if (PlayerController.currentRoom == Room.Sunroom) {
+                roomToCheck = RoomManager.sunroomItems;
+            } else {
+                roomToCheck = RoomManager.libraryItems;
+            }
+            for (int i = 0; i < roomToCheck.Count; i++) {
+                bool isBlockingItem = true;
+                List<Vector2> itemToCheck = roomToCheck[i].GetComponent<ItemController>().entryPoints;
+                for (int j = 0; j < itemToCheck.Count; j++) {
+                    if (!locations.Exists(element => element == itemToCheck[j])) {
+                        isBlockingItem = false;
+                        break;
+                    }
+                }
+
+                if (isBlockingItem) {
+                    notBlockingEntries = false;
+                    break;
+                }
+            }
+
+            if (entryPoints.Count > 0 && notBlockingEntries && canPlace) {
                 promptManager.EditPlacePrompts();
 
                 if (Input.GetKeyDown("x"))
@@ -110,9 +136,35 @@ public class MouseHighlightController : MonoBehaviour
                             RoomManager.AddItemToRoom(itemToMove, Room.Sunroom);
                         }
                         inventoryManager.RemoveInventoryItems(itemToPlace.itemName, 1);
-                    } else if (itemToMove != null && itemToPlace == null) {
+                    } else if (itemToMove != null) {
+                        List<Vector2> oldLocations = itemToMove.GetComponent<ItemController>().locations;
+                        for (int i = 0; i < roomToCheck.Count; i++) {
+                            List<Vector2> itemToCheck = roomToCheck[i].GetComponent<ItemController>().locations;
+                            for (int j = 0; j < oldLocations.Count; j++) {
+                                if (
+                                    itemToCheck.Exists(element => element == new Vector2(oldLocations[j].x, oldLocations[j].y + 1.0f))
+                                    || itemToCheck.Exists(element => element == new Vector2(oldLocations[j].x, oldLocations[j].y - 1.0f))
+                                    || itemToCheck.Exists(element => element == new Vector2(oldLocations[j].x + 1.0f, oldLocations[j].y))
+                                    || itemToCheck.Exists(element => element == new Vector2(oldLocations[j].x - 1.0f, oldLocations[j].y))
+                                ) {
+                                    roomToCheck[i].GetComponent<ItemController>().entryPoints.Add(oldLocations[i]);
+                                }
+                            }
+                        }
+
                         itemToMove.GetComponent<ItemController>().Move(locations, entryPoints);
                         itemToMove.SetActive(true);
+                    }
+
+                    for (int i = 0; i < roomToCheck.Count; i++) {
+                        List<Vector2> itemToCheck = roomToCheck[i].GetComponent<ItemController>().entryPoints;
+                        List<Vector2> currentLocations = itemToMove.GetComponent<ItemController>().locations;
+                        for (int j = 0; j < currentLocations.Count; j++) {
+                            int index = itemToCheck.FindIndex(element => element == currentLocations[j]);
+                            if (index > -1) {
+                                itemToCheck.Remove(itemToCheck[index]);
+                            }
+                        }
                     }
 
                     isDeactivating = true;
@@ -140,8 +192,8 @@ public class MouseHighlightController : MonoBehaviour
         if (hit.collider == null)
         {
             entryPoints.Add(new Vector2(
-                origin.x + direction.x,
-                origin.y + direction.y
+                (Mathf.Round((origin.x + direction.x) * 100)) / 100.0f,
+                (Mathf.Round((origin.y + direction.y) * 100)) / 100.0f
             ));
         }
     }
@@ -162,6 +214,27 @@ public class MouseHighlightController : MonoBehaviour
     }
 
     void RemoveItem() {
+        List<Vector2> hoveredLocations = hoveredItem.GetComponent<ItemController>().locations;
+        List<GameObject> roomToCheck;
+        if (PlayerController.currentRoom == Room.Sunroom) {
+            roomToCheck = RoomManager.sunroomItems;
+        } else {
+            roomToCheck = RoomManager.libraryItems;
+        }
+        for (int i = 0; i < roomToCheck.Count; i++) {
+            List<Vector2> itemToCheck = roomToCheck[i].GetComponent<ItemController>().locations;
+            for (int j = 0; j < hoveredLocations.Count; j++) {
+                if (
+                    itemToCheck.Exists(element => element == new Vector2(hoveredLocations[j].x, hoveredLocations[j].y + 1.0f))
+                    || itemToCheck.Exists(element => element == new Vector2(hoveredLocations[j].x, hoveredLocations[j].y - 1.0f))
+                    || itemToCheck.Exists(element => element == new Vector2(hoveredLocations[j].x + 1.0f, hoveredLocations[j].y))
+                    || itemToCheck.Exists(element => element == new Vector2(hoveredLocations[j].x - 1.0f, hoveredLocations[j].y))
+                ) {
+                    itemToCheck.Add(hoveredLocations[i]);
+                }
+            }
+        }
+
         inventoryManager.AddInventoryItems(hoveredItem.GetComponent<ItemController>().itemName, 1);
         if (PlayerController.currentRoom == Room.Library) {
             RoomManager.RemoveItemFromRoom(hoveredItem, Room.Library);
@@ -300,7 +373,7 @@ public class MouseHighlightController : MonoBehaviour
             isOverlapping = true;
             hoveredItem = collider.gameObject;
 
-            if (hoveredItem.GetComponent<ItemController>().type == InventoryType.Bed) {
+            if (!hasItem && hoveredItem.GetComponent<ItemController>().type == InventoryType.Bed) {
                 isLarge = true;
                 highlightAnimator.SetBool("IsLargeHighlight", true);
             }
@@ -314,7 +387,7 @@ public class MouseHighlightController : MonoBehaviour
             isOverlapping = false;
             hoveredItem = null;
 
-            if (isLarge) {
+            if (!hasItem && isLarge) {
                 isLarge = false;
                 highlightAnimator.SetBool("IsLargeHighlight", false);
             }

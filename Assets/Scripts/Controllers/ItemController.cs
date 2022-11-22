@@ -27,8 +27,15 @@ public class ItemController : MonoBehaviour
         sprite = itemValues.sprite;
         level = itemValues.level;
         type = itemValues.type;
-        locations = newLocations;
-        entryPoints = newEntryPoints;
+
+        for (int i = 0; i < newLocations.Count; i++) {
+            Vector2 locationToAdd = new Vector2(newLocations[i].x, newLocations[i].y);
+            locations.Add(locationToAdd);
+        }
+        for (int i = 0; i < newEntryPoints.Count; i++) {
+            Vector2 entryToAdd = new Vector2(newEntryPoints[i].x, newEntryPoints[i].y);
+            entryPoints.Add(entryToAdd);
+        }
 
         GetComponent<SpriteRenderer>().sprite = itemValues.sprite;
 
@@ -45,7 +52,17 @@ public class ItemController : MonoBehaviour
         } else {
             transform.position = newLocations[0];
         }
-        locations = newLocations;
-        entryPoints = newEntryPoints;
+
+        locations.Clear();
+        entryPoints.Clear();
+
+        for (int i = 0; i < newLocations.Count; i++) {
+            Vector2 locationToAdd = new Vector2(newLocations[i].x, newLocations[i].y);
+            locations.Add(locationToAdd);
+        }
+        for (int i = 0; i < newEntryPoints.Count; i++) {
+            Vector2 entryToAdd = new Vector2(newEntryPoints[i].x, newEntryPoints[i].y);
+            entryPoints.Add(entryToAdd);
+        }
     }
 }
