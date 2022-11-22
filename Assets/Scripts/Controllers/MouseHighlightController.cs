@@ -10,6 +10,7 @@ public class MouseHighlightController : MonoBehaviour
     public bool isDeactivating = false;
     public InventoryItemClass itemToPlace;
     public GameObject itemToMove;
+    public GameObject hoveredItem;
     public List<Vector2> locations = new List<Vector2>();
     public List<Vector2> entryPoints = new List<Vector2>();
     public GameObject itemPrefab;
@@ -31,6 +32,12 @@ public class MouseHighlightController : MonoBehaviour
         inventoryManager = inventoryManagerReference.GetComponent<InventoryManager>();
         highlightAnimator = GetComponent<Animator>();
         highlightRigidbody = GetComponent<Rigidbody2D>();
+
+        isOverlapping = false;
+        isDeactivating = false;
+        hoveredItem = null;
+        locations.Clear();
+        entryPoints.Clear();
     }
 
     void Update()
@@ -47,18 +54,26 @@ public class MouseHighlightController : MonoBehaviour
                 || PromptManager.currentActionSet == AvailableActionSet.EditCancelPrompt)
         )
         {
-            // re-add itemToMove if not null
+            if (itemToMove != null && itemToPlace == null) {
+                itemToMove.SetActive(true);
+            }
+
             isDeactivating = true;
             promptManager.OpenNotebookPrompt();
             TimeManager.ExitEditMode();
             gameObject.SetActive(false);
+        } else if (Input.GetKeyDown("x") && PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts)
+        {
+            PickUpItem();
+        } else if (Input.GetKeyDown("q") && PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts)
+        {
+            RemoveItem();
         }
 
         if (hasItem && !isOverlapping && !isDeactivating) {
             entryPoints.Clear();
             locations.Clear();
 
-            // check entry points
             if (isLarge) {
                 CheckEntryPoint(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y + 0.5f), new Vector2(-1.0f, 0.0f));
                 CheckEntryPoint(new Vector2(highlightRigidbody.position.x - 0.5f, highlightRigidbody.position.y + 0.5f), new Vector2(0.0f, 1.0f));
@@ -89,16 +104,15 @@ public class MouseHighlightController : MonoBehaviour
                         GameObject newItem = Instantiate(itemPrefab, highlightRigidbody.position, Quaternion.identity);
                         newItem.GetComponent<ItemController>().InitializeItem(itemToPlace, locations, entryPoints);
                         itemToMove = newItem;
-                    }
-
-                    if (itemToMove != null) {
                         if (PlayerController.currentRoom == Room.Library) {
                             RoomManager.AddItemToRoom(itemToMove, Room.Library);
                         } else if (PlayerController.currentRoom == Room.Sunroom) {
                             RoomManager.AddItemToRoom(itemToMove, Room.Sunroom);
                         }
-
                         inventoryManager.RemoveInventoryItems(itemToPlace.itemName, 1);
+                    } else if (itemToMove != null && itemToPlace == null) {
+                        itemToMove.GetComponent<ItemController>().Move(locations, entryPoints);
+                        itemToMove.SetActive(true);
                     }
 
                     isDeactivating = true;
@@ -106,11 +120,16 @@ public class MouseHighlightController : MonoBehaviour
                     TimeManager.ExitEditMode();
                     gameObject.SetActive(false);
                 }
-            } else {
+            }
+            else {
                 promptManager.EditCancelPrompt();
             }
-        } else {
-
+        }
+        else if (!hasItem && isOverlapping && !isDeactivating) {
+            promptManager.EditPickUpPrompts();
+        }
+        else if (!isDeactivating) {
+            promptManager.EditCancelPrompt();
         }
     }
 
@@ -127,10 +146,38 @@ public class MouseHighlightController : MonoBehaviour
         }
     }
 
+    void PickUpItem() {
+        itemToMove = hoveredItem;
+        itemToMove.SetActive(false);
+        transform.Find("Item").GetComponent<SpriteRenderer>().sprite = itemToMove.GetComponent<ItemController>().sprite;
+        hasItem = true;
+
+        if (itemToMove.GetComponent<ItemController>().type == InventoryType.Bed) {
+            isLarge = true;
+            highlightAnimator.SetBool("IsLargeHighlight", true);
+        } else {
+            isLarge = false;
+            highlightAnimator.SetBool("IsLargeHighlight", false);
+        }
+    }
+
+    void RemoveItem() {
+        inventoryManager.AddInventoryItems(hoveredItem.GetComponent<ItemController>().itemName, 1);
+        if (PlayerController.currentRoom == Room.Library) {
+            RoomManager.RemoveItemFromRoom(hoveredItem, Room.Library);
+        } else if (PlayerController.currentRoom == Room.Sunroom) {
+            RoomManager.RemoveItemFromRoom(hoveredItem, Room.Sunroom);
+        }
+
+        isDeactivating = true;
+        promptManager.OpenNotebookPrompt();
+        TimeManager.ExitEditMode();
+        gameObject.SetActive(false);
+    }
+
     public void SetHighlightProps(InventoryItemClass item)
     {
         StuffThatShouldWork();
-        isDeactivating = false;
 
         itemToPlace = item;
         itemToMove = null;
@@ -146,29 +193,9 @@ public class MouseHighlightController : MonoBehaviour
         }
     }
 
-    public void SetHighlightProps(GameObject item)
-    {
-        StuffThatShouldWork();
-        isDeactivating = false;
-
-        itemToPlace = null;
-        itemToMove = item;
-        transform.Find("Item").GetComponent<SpriteRenderer>().sprite = item.GetComponent<ItemController>().sprite;
-        hasItem = true;
-
-        if (item.GetComponent<ItemController>().type == InventoryType.Bed) {
-            isLarge = true;
-            highlightAnimator.SetBool("IsLargeHighlight", true);
-        } else {
-            isLarge = false;
-            highlightAnimator.SetBool("IsLargeHighlight", false);
-        }
-    }
-
     public void SetHighlightProps()
     {
         StuffThatShouldWork();
-        isDeactivating = false;
 
         itemToPlace = null;
         itemToMove = null;
@@ -219,6 +246,8 @@ public class MouseHighlightController : MonoBehaviour
                     roundedPosition.y = RoomManager.sunroomBottomY + 0.5f;
                 }
             } else {
+                isDeactivating = true;
+                promptManager.OpenNotebookPrompt();
                 TimeManager.ExitEditMode();
                 gameObject.SetActive(false);
             }
@@ -254,6 +283,7 @@ public class MouseHighlightController : MonoBehaviour
                     roundedPosition.y = RoomManager.sunroomBottomY;
                 }
             } else {
+                isDeactivating = true;
                 promptManager.OpenNotebookPrompt();
                 TimeManager.ExitEditMode();
                 gameObject.SetActive(false);
@@ -268,7 +298,12 @@ public class MouseHighlightController : MonoBehaviour
         if (collider.gameObject.tag == "Item")
         {
             isOverlapping = true;
-            promptManager.EditCancelPrompt();
+            hoveredItem = collider.gameObject;
+
+            if (hoveredItem.GetComponent<ItemController>().type == InventoryType.Bed) {
+                isLarge = true;
+                highlightAnimator.SetBool("IsLargeHighlight", true);
+            }
         }
     }
 
@@ -277,7 +312,12 @@ public class MouseHighlightController : MonoBehaviour
         if (collider.gameObject.tag == "Item")
         {
             isOverlapping = false;
-            promptManager.EditPlacePrompts();
+            hoveredItem = null;
+
+            if (isLarge) {
+                isLarge = false;
+                highlightAnimator.SetBool("IsLargeHighlight", false);
+            }
         }
     }
 }

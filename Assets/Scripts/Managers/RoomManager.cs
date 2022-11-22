@@ -24,7 +24,7 @@ public class RoomManager : MonoBehaviour
 
     void Update()
     {
-        
+
     }
 
     public static void AddItemToRoom(GameObject item, Room room) {
@@ -32,6 +32,18 @@ public class RoomManager : MonoBehaviour
             libraryItems.Add(item);
         } else if (room == Room.Sunroom) {
             sunroomItems.Add(item);
+        }
+    }
+
+    public static void RemoveItemFromRoom(GameObject item, Room room) {
+        if (room == Room.Library) {
+            int index = libraryItems.FindIndex(element => element.GetComponent<ItemController>().locations == item.GetComponent<ItemController>().locations);
+            libraryItems.Remove(libraryItems[index]);
+            Destroy(item);
+        } else if (room == Room.Sunroom) {
+            int index = sunroomItems.FindIndex(element => element.GetComponent<ItemController>().locations == item.GetComponent<ItemController>().locations);
+            sunroomItems.Remove(sunroomItems[index]);
+            Destroy(item);
         }
     }
 }

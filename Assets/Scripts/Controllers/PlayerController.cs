@@ -10,8 +10,13 @@ public class PlayerController : MonoBehaviour
     Vector2 movement = new Vector2(0, 0);
     public static Room currentRoom;
 
+    public GameObject promptManagerReference;
+    PromptManager promptManager;
+    public GameObject mouseHighlight;
+
     void Start()
     {
+        promptManager = promptManagerReference.GetComponent<PromptManager>();
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
         playerAnimator.SetFloat("LookX", 1.0f);
@@ -53,13 +58,35 @@ public class PlayerController : MonoBehaviour
             && transform.position.y > RoomManager.libraryBottomY - 0.5f && transform.position.y < RoomManager.libraryTopY + 0.5f
         ) {
             currentRoom = Room.Library;
+            if (PromptManager.currentActionSet == AvailableActionSet.OpenNotebookPrompt) {
+                promptManager.CatRoomsPrompts();
+            }
         } else if (
             transform.position.x > RoomManager.sunroomLeftX - 0.5f && transform.position.x < RoomManager.sunroomRightX + 0.5f
             && transform.position.y > RoomManager.sunroomBottomY - 0.5f && transform.position.y < RoomManager.sunroomTopY + 0.5f
         ) {
             currentRoom = Room.Sunroom;
+            if (PromptManager.currentActionSet == AvailableActionSet.OpenNotebookPrompt) {
+                promptManager.CatRoomsPrompts();
+            }
         } else {
             currentRoom = Room.Other;
+            if (
+                PromptManager.currentActionSet == AvailableActionSet.CatRoomsPrompts
+                || PromptManager.currentActionSet == AvailableActionSet.CatRoomsPromptsWithCats
+            ) {
+                promptManager.OpenNotebookPrompt();
+            }
+        }
+
+        if (Input.GetKeyDown("q")
+            && (PromptManager.currentActionSet == AvailableActionSet.CatRoomsPrompts
+            || PromptManager.currentActionSet == AvailableActionSet.CatRoomsPromptsWithCats)
+        ) {
+            promptManager.EditCancelPrompt();
+            TimeManager.EnterEditMode();
+            mouseHighlight.SetActive(true);
+            mouseHighlight.GetComponent<MouseHighlightController>().SetHighlightProps();
         }
     }
 

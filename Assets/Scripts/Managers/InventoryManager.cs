@@ -29,6 +29,7 @@ public class InventoryManager : MonoBehaviour
         if (
             Input.GetKeyDown("x")
             && NotebookManager.currentTab == NotebookTab.Inventory
+            && selectedItem != null
             && selectedItem.type != InventoryType.Food
             && PlayerController.currentRoom != Room.Other
             && PromptManager.currentActionSet == AvailableActionSet.CloseNotebookPrompt
@@ -90,7 +91,7 @@ public class InventoryManager : MonoBehaviour
     }
 
     public void RefreshInventoryDetail() {
-        if (selectedItem.itemName != "" && selectedItem.quantity > 0) {
+        if (selectedItem != null && selectedItem.itemName != "" && selectedItem.quantity > 0) {
             ShowInventoryDetail(selectedItem);
         } else {
             selectedItem = null;
@@ -100,7 +101,14 @@ public class InventoryManager : MonoBehaviour
 
     public void RemoveInventoryItems(string itemName, int amount) {
         int index = inventory.FindIndex(element => element.itemName == itemName);
-        inventory[index].quantity--;
+        inventory[index].quantity -= amount;
+        RefreshInventory();
+        RefreshInventoryDetail();
+    }
+
+    public void AddInventoryItems(string itemName, int amount) {
+        int index = inventory.FindIndex(element => element.itemName == itemName);
+        inventory[index].quantity += amount;
         RefreshInventory();
         RefreshInventoryDetail();
     }

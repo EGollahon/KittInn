@@ -82,7 +82,7 @@ public class PromptManager : MonoBehaviour
 
     public void EditCancelPrompt() {
         SetPromptsVisibility(false, true, false, false, false, false);
-        currentActionSet = AvailableActionSet.PlacePrompt;
+        currentActionSet = AvailableActionSet.EditCancelPrompt;
     }
 
     // public void OpenComputerPrompt() {

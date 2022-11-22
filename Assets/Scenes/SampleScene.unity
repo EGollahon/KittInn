@@ -9302,6 +9302,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a03e1d0cb4a6e66cb590f7344de53ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptManagerReference: {fileID: 2049918368}
+  mouseHighlight: {fileID: 500581399}
 --- !u!212 &1561927423
 SpriteRenderer:
   m_ObjectHideFlags: 0
