@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MoneyManager : MonoBehaviour
 {
-    public static int money = 100;
+    public static int money = 50;
     
     public GameObject moneyReference;
     TextMeshProUGUI moneyDisplay;
@@ -19,18 +19,18 @@ public class MoneyManager : MonoBehaviour
 
     void Update()
     {
-        
+        if (moneyDisplay.text != money.ToString()) {
+            moneyDisplay.text = money.ToString();
+        }
     }
 
-    public void DepositMoney(int amount) {
+    public static void DepositMoney(int amount) {
         money += amount;
-        moneyDisplay.text = money.ToString();
     }
 
-    public void WithdrawMoney(int amount) {
+    public static void WithdrawMoney(int amount) {
         if (money >= amount) {
             money -= amount;
-            moneyDisplay.text = money.ToString();
         }
     }
 }

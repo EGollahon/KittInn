@@ -72,7 +72,7 @@ public class InventoryManager : MonoBehaviour
         itemDetailReference.transform.Find("Picture").gameObject.GetComponent<Image>().sprite = item.sprite;
 
         if (item.type == InventoryType.FoodDish || item.type == InventoryType.WaterDish || item.type == InventoryType.LitterBox) {
-            itemDetailReference.transform.Find("Type").gameObject.GetComponent<TextMeshProUGUI>().text = "Essential";
+            itemDetailReference.transform.Find("Type").gameObject.GetComponent<TextMeshProUGUI>().text = "Basic";
         } else {
             itemDetailReference.transform.Find("Type").gameObject.GetComponent<TextMeshProUGUI>().text = item.type.ToString();
         }

@@ -85,11 +85,15 @@ public class PromptManager : MonoBehaviour
         currentActionSet = AvailableActionSet.EditCancelPrompt;
     }
 
-    // public void OpenComputerPrompt() {
-        
-    // }
+    public void OpenComputerPrompt() {
+        notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Open Computer";
+        SetPromptsVisibility(true, false, false, false, false, false);
+        currentActionSet = AvailableActionSet.OpenComputerPrompt;
+    }
 
-    // public void CloseComputerPrompt() {
-
-    // }
+    public void CloseComputerPrompt() {
+        notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Close Computer";
+        SetPromptsVisibility(true, false, false, false, false, false);
+        currentActionSet = AvailableActionSet.CloseComputerPrompt;
+    }
 }

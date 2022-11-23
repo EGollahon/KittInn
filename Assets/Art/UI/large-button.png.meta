@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: eb2b4b35e15146e2db01f5252828f09b
+guid: efed7ff3367e8129f835ebfb55916cd8
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,13 +117,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: notebook-tab_0
+      name: large-button_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 144
-        height: 32
+        width: 123
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 95bd15e3dfb9856c5be6a0cbd5ea0f80
-      internalID: 1156675476
+      spriteID: 0e450cf840dd79ebe9f5413007c8ed41
+      internalID: 485553266
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: notebook-tab_1
+      name: large-button_1
       rect:
         serializedVersion: 2
-        x: 144
+        x: 123
         y: 0
-        width: 144
-        height: 32
+        width: 123
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,8 +152,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9073bc8be94de4ab4ae7ad55480b5d8d
-      internalID: 1505761227
+      spriteID: f5db439908c2b499898720834eecf58d
+      internalID: 334466183
       vertices: []
       indices: 
       edges: []
@@ -169,8 +169,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      notebook-tab_1: 1505761227
-      notebook-tab_0: 1156675476
+      large-button_0: 485553266
+      large-button_1: 334466183
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

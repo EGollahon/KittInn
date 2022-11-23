@@ -77,10 +77,6 @@ public class NotebookManager : MonoBehaviour
         }
     }
 
-    public static void OpenNotebook() {
-        isNotebookOpen = true;
-    }
-
     public static void CloseNotebook() {
         isNotebookOpen = false;
     }

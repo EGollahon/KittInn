@@ -2,22 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorController : MonoBehaviour
+public class DeskController : MonoBehaviour
 {
-    SpriteRenderer doorRenderer;
-    public Sprite openSprite;
-    public Sprite closedSprite;
+    public GameObject promptManagerReference;
+    PromptManager promptManager;
 
     void Start()
     {
-        doorRenderer = GetComponent<SpriteRenderer>();
+        promptManager = promptManagerReference.GetComponent<PromptManager>();
     }
 
     void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.gameObject.tag == "Bea")
         {
-            doorRenderer.sprite = openSprite;
+            promptManager.OpenComputerPrompt();
         }
     }
 
@@ -25,7 +24,7 @@ public class DoorController : MonoBehaviour
     {
         if (collider.gameObject.tag == "Bea")
         {
-            doorRenderer.sprite = closedSprite;
+            promptManager.OpenNotebookPrompt();
         }
     }
 }

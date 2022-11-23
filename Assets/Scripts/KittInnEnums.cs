@@ -24,7 +24,9 @@ public enum AvailableActionSet
     EditPlacePrompts,
     EditPickUpPrompts,
     PlacePrompt,
-    EditCancelPrompt
+    EditCancelPrompt,
+    OpenComputerPrompt,
+    CloseComputerPrompt
 }
 
 public enum NotebookTab
@@ -34,6 +36,13 @@ public enum NotebookTab
     Quests
 }
 
+public enum ComputerTab
+{
+    MeowMart,
+    Guests,
+    KittInn
+}
+
 public enum InventoryType {
     Food,
     FoodDish,
@@ -41,11 +50,6 @@ public enum InventoryType {
     LitterBox,
     Bed,
     Toy
-}
-
-public enum ComputerTab
-{
-    
 }
 
 public enum Personality {
