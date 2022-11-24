@@ -43,7 +43,7 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    void RefreshInventory() {
+    public void RefreshInventory() {
         for (int i = 0; i < inventorySlots.Count; i++)
         {
             inventorySlots[i].GetComponent<Button>().onClick.RemoveAllListeners();

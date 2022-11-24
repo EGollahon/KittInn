@@ -42,7 +42,11 @@ public class MeowMartManager : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown("x") && PromptManager.currentActionSet == AvailableActionSet.CloseComputerPrompt) {
+        if (
+            Input.GetKeyDown("x")
+            && PromptManager.currentActionSet == AvailableActionSet.CloseComputerPrompt
+            && ComputerManager.currentTab == ComputerTab.MeowMart
+        ) {
             if (isBuying && price <= MoneyManager.money) {
                 BuyItems();
             } else if (!isBuying && amount <= selectedItem.quantity) {
@@ -62,8 +66,7 @@ public class MeowMartManager : MonoBehaviour
         int usedSlots = 0;
         for (int i = 0; i < inventoryManager.inventory.Count; i++)
         {
-            // add only items of own level are available (kittinn manager)
-            if (isBuying || inventoryManager.inventory[i].quantity > 0) {
+            if ((isBuying && KittInnManager.level >= inventoryManager.inventory[i].level) || inventoryManager.inventory[i].quantity > 0) {
                 int itemIndex = i;
                 meowMartSlots[usedSlots].GetComponent<Button>().onClick.AddListener(() => ShowMeowMartDetail(inventoryManager.inventory[itemIndex]));
                 meowMartSlots[usedSlots].transform.Find("Item").gameObject.GetComponent<Image>().sprite = inventoryManager.inventory[itemIndex].sprite;
@@ -165,6 +168,8 @@ public class MeowMartManager : MonoBehaviour
 
         RefreshMart();
         RefreshMartDetail();
+        inventoryManager.RefreshInventory();
+        inventoryManager.RefreshInventoryDetail();
     }
 
     void SellItems() {
@@ -173,5 +178,7 @@ public class MeowMartManager : MonoBehaviour
 
         RefreshMart();
         RefreshMartDetail();
+        inventoryManager.RefreshInventory();
+        inventoryManager.RefreshInventoryDetail();
     }
 }

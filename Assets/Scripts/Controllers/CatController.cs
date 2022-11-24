@@ -6,10 +6,10 @@ public class CatController : MonoBehaviour
 {
     public static float walkSpeed = 2.0f;
     public CatName catName;
-    // public Sprite coat;
+    public CoatColor coat;
     public Personality personality;
-    public Food favFood;
     public int spoiledLevel;
+    public Food favFood;
 
     public Status status = Status.Content;
     public Status lastStatus = Status.Content;
@@ -17,6 +17,7 @@ public class CatController : MonoBehaviour
     public Activity activity;
     // public GameObject interactingWith;
 
+    public bool isCheckedIn = false;
     public float arrivalTime;
     public float checkOutTime;
     public int stayLength;
@@ -39,16 +40,16 @@ public class CatController : MonoBehaviour
 
     void Start()
     {
-        IntializeCat(
-            CatName.Petunia,
-            // newCoat,
-            Personality.Agreeable,
-            Food.SavoryKibble,
-            1,
-            7.5f,
-            10.0f,
-            1
-        );
+        // IntializeCat(
+        //     CatName.Petunia,
+        //     // newCoat,
+        //     Personality.Agreeable,
+        //     Food.SavoryKibble,
+        //     1,
+        //     7.5f,
+        //     10.0f,
+        //     1
+        // );
     }
 
     void Update()
@@ -247,20 +248,20 @@ public class CatController : MonoBehaviour
 
     public void IntializeCat(
         CatName newCatName,
-        // Sprite newCoat,
+        CoatColor newCoat,
         Personality newPersonality,
-        Food newFavFood,
         int newSpoiledLevel,
+        Food newFavFood,
         float newArrivalTime,
         float newCheckOutTime,
         int newStayLength
     )
     {
         catName = newCatName;
-        // Sprite coat = newCoat;
+        coat = newCoat;
         personality = newPersonality;
-        favFood = newFavFood;
         spoiledLevel = newSpoiledLevel;
+        favFood = newFavFood;
         arrivalTime = newArrivalTime;
         checkOutTime = newCheckOutTime;
         stayLength = newStayLength;

@@ -33,3 +33,17 @@ public class QuestEntryClass
     public int sellCost;
     public InventoryType type;
 }
+
+[System.Serializable]
+public class CoatClass
+{
+    public CoatColor coatColor;
+    public Sprite displaySprite;
+}
+
+[System.Serializable]
+public class FoodClass
+{
+    public Food foodName;
+    public Sprite displaySprite;
+}

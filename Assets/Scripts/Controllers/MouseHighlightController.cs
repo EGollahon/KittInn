@@ -128,7 +128,7 @@ public class MouseHighlightController : MonoBehaviour
                 {
                     if (itemToMove == null && itemToPlace != null) {
                         GameObject newItem = Instantiate(itemPrefab, highlightRigidbody.position, Quaternion.identity);
-                        newItem.GetComponent<ItemController>().InitializeItem(itemToPlace, locations, entryPoints);
+                        newItem.GetComponent<ItemController>().InitializeItem(itemToPlace, locations, entryPoints, inventoryManager);
                         itemToMove = newItem;
                         if (PlayerController.currentRoom == Room.Library) {
                             RoomManager.AddItemToRoom(itemToMove, Room.Library);

@@ -63,6 +63,18 @@ public enum Personality {
 }
 
 public enum CoatColor {
+    Black,
+    Gray,
+    Red,
+    Tan,
+    Gold,
+    Blue,
+    Orange,
+    Teal,
+    Cream,
+    Burgundy,
+    Lime,
+    Green,
     Count
 }
 
