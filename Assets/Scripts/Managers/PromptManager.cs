@@ -96,4 +96,9 @@ public class PromptManager : MonoBehaviour
         SetPromptsVisibility(true, false, false, false, false, false);
         currentActionSet = AvailableActionSet.CloseComputerPrompt;
     }
+
+    public void NoActions() {
+        SetPromptsVisibility(false, false, false, false, false, false);
+        currentActionSet = AvailableActionSet.NoActions;
+    }
 }

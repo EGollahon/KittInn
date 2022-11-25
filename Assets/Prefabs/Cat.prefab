@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1390320388, guid: 7b52b9e8203c52a948f373e234541125, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &4542246884707810958
@@ -106,10 +106,12 @@ MonoBehaviour:
   lastStatus: 0
   purr: 50
   activity: 0
+  carrier: {fileID: 0}
   isCheckedIn: 0
   arrivalTime: 0
   checkOutTime: 0
   stayLength: 0
   newStatusTime: 7.25
   satisfyTimer: -1
+  currentRoom: 0
   stepInPath: 1

@@ -7,8 +7,10 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D playerRigidbody;
     Animator playerAnimator;
     float walkSpeed = 3.0f;
-    Vector2 movement = new Vector2(0, 0);
+    Vector2 movement = new Vector2(0.0f, 0.0f);
+    public Vector2 lookDirection = new Vector2(0.0f, -1.0f);
     public static Room currentRoom;
+    public bool isCarrying = false;
 
     public GameObject promptManagerReference;
     PromptManager promptManager;
@@ -33,22 +35,25 @@ public class PlayerController : MonoBehaviour
             playerAnimator.SetBool("IsWalking", true);
 
             if (movement.x > 0.5f) {
-                playerAnimator.SetFloat("LookX", 1.0f);
-                playerAnimator.SetFloat("LookY", 1.0f);
+                lookDirection.x = 1.0f;
+                lookDirection.y = 1.0f;
             } else if (movement.x < -0.5f) {
-                playerAnimator.SetFloat("LookX", -1.0f);
-                playerAnimator.SetFloat("LookY", 1.0f);
+                lookDirection.x = -1.0f;
+                lookDirection.y = 1.0f;
             } else {
-                playerAnimator.SetFloat("LookX", 0.0f);
+                lookDirection.x = 0.0f;
             }
             
             if (movement.y > 0.5f) {
-                playerAnimator.SetFloat("LookY", 1.0f);
+                lookDirection.y = 1.0f;
             } else if (movement.y < -0.5f) {
-                playerAnimator.SetFloat("LookY", -1.0f);
+                lookDirection.y = -1.0f;
             } else {
-                playerAnimator.SetFloat("LookY", 0.0f);
+                lookDirection.y = 0.0f;
             }
+
+            playerAnimator.SetFloat("LookX", lookDirection.x);
+            playerAnimator.SetFloat("LookY", lookDirection.y);
         } else {
             playerAnimator.SetBool("IsWalking", false);
         }
@@ -99,5 +104,13 @@ public class PlayerController : MonoBehaviour
         newPos.y += walkSpeed * movement.y * Time.deltaTime;
 
         playerRigidbody.MovePosition(newPos);
+    }
+    
+    public void PickUp() {
+        isCarrying = true;
+    }
+
+    public void Place() {
+        isCarrying = false;
     }
 }

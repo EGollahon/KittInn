@@ -26,7 +26,8 @@ public enum AvailableActionSet
     PlacePrompt,
     EditCancelPrompt,
     OpenComputerPrompt,
-    CloseComputerPrompt
+    CloseComputerPrompt,
+    NoActions
 }
 
 public enum NotebookTab

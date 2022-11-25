@@ -10,24 +10,27 @@ public class CatController : MonoBehaviour
     public Personality personality;
     public int spoiledLevel;
     public Food favFood;
-
+ 
+    public bool autonomous = false;
     public Status status = Status.Content;
     public Status lastStatus = Status.Content;
     public float purr = 50.0f;
     public Activity activity;
     // public GameObject interactingWith;
 
+    public GameObject carrier;
     public bool isCheckedIn = false;
     public float arrivalTime;
     public float checkOutTime;
     public int stayLength;
 
-    public float newStatusTime = 7.25f;
+    public float newStatusTime = 0.0f;
     public float satisfyTimer = -1.0f;
 
+    public Room currentRoom;
     List<Tile> openList = new List<Tile>();
     List<Tile> closedList = new List<Tile>();
-    Vector2 targetLocation = new Vector2(3.5f, -2.5f);
+    Vector2 targetLocation = new Vector2(0.0f, 0.0f);
     public int stepInPath = 1;
     class Tile
     {
@@ -40,21 +43,12 @@ public class CatController : MonoBehaviour
 
     void Start()
     {
-        // IntializeCat(
-        //     CatName.Petunia,
-        //     // newCoat,
-        //     Personality.Agreeable,
-        //     Food.SavoryKibble,
-        //     1,
-        //     7.5f,
-        //     10.0f,
-        //     1
-        // );
+
     }
 
     void Update()
     {
-        if (status == Status.Content) {
+        if (status == Status.Content && autonomous) {
             if (TimeManager.timeOfDay == TimeOfDay.Night && activity != Activity.Sleeping) {
                 status = Status.Tired;
                 activity = Activity.Sleeping;
@@ -80,6 +74,7 @@ public class CatController : MonoBehaviour
                 if (stepInPath < (closedList.Count - 1)) {
                     stepInPath++;
                 } else {
+                    autonomous = true;
                     satisfyTimer = 1.0f;
 
                     switch (status) {
@@ -102,6 +97,7 @@ public class CatController : MonoBehaviour
                             activity = Activity.BeingPetted;
                             break;
                         default:
+                            activity = Activity.Waiting;
                             break;
                     }
                 }
@@ -236,14 +232,12 @@ public class CatController : MonoBehaviour
         GetNewStatus();
     }
 
-    public void PickCatUp()
-    {
-
-    }
-
-    public void PutCatDown()
-    {
-
+    public void WalkOutOfCarrier(Vector2 carrierLookDirection) {
+        targetLocation = new Vector2(transform.position.x + carrierLookDirection.x, transform.position.y + carrierLookDirection.y);
+        Tile currentTile = CreateNewTile(new Vector2(transform.position.x, transform.position.y), null, true);
+        closedList.Add(currentTile);
+        closedList.Add(CreateNewTile(targetLocation, currentTile, false));
+        activity = Activity.Moving;
     }
 
     public void IntializeCat(
@@ -252,9 +246,8 @@ public class CatController : MonoBehaviour
         Personality newPersonality,
         int newSpoiledLevel,
         Food newFavFood,
-        float newArrivalTime,
-        float newCheckOutTime,
-        int newStayLength
+        int newStayLength,
+        GameObject newCarrier
     )
     {
         catName = newCatName;
@@ -262,8 +255,7 @@ public class CatController : MonoBehaviour
         personality = newPersonality;
         spoiledLevel = newSpoiledLevel;
         favFood = newFavFood;
-        arrivalTime = newArrivalTime;
-        checkOutTime = newCheckOutTime;
         stayLength = newStayLength;
+        carrier = newCarrier;
     }
 }

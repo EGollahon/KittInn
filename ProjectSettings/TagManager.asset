@@ -8,6 +8,7 @@ TagManager:
   - Wall
   - Door
   - Item
+  - Carrier Spot
   layers:
   - Default
   - TransparentFX
@@ -16,8 +17,8 @@ TagManager:
   - Water
   - UI
   - Block Entry Point
-  - 
-  - 
+  - Bea
+  - Being Carried
   - 
   - 
   - 
