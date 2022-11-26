@@ -196,6 +196,7 @@ public class CarrierController : MonoBehaviour
             bea.GetComponent<PlayerController>().Place();
             isPickedUp = false;
             carrierRigidbody.MovePosition(carrierSpot.transform.position);
+            carrierSpot.GetComponent<SpotController>().isOccupied = true;
             gameObject.layer = LayerMask.NameToLayer("Default");
             alertFrame.SetActive(false);
             isArriving = false;
@@ -230,6 +231,7 @@ public class CarrierController : MonoBehaviour
         } else if (
             collider.gameObject.tag == "Carrier Spot"
             && !isCatInside && isArriving && isPickedUp
+            && !collider.gameObject.GetComponent<SpotController>().isOccupied
         ) {
             carrierSpot = collider.gameObject;
         }

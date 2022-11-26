@@ -50,7 +50,8 @@ public enum InventoryType {
     WaterDish,
     LitterBox,
     Bed,
-    Toy
+    Toy,
+    None
 }
 
 public enum Personality {
@@ -111,7 +112,10 @@ public enum Activity {
     Playing,
     BeingPetted,
     BeingCarried,
-    LookingForAttention
+    LookingForAttention,
+    Checking,
+    WaitingForUses,
+    WaitingForUnoccupied
 }
 
 public enum CatName {

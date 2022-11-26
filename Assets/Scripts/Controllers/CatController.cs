@@ -16,7 +16,8 @@ public class CatController : MonoBehaviour
     public Status lastStatus = Status.Content;
     public float purr = 50.0f;
     public Activity activity;
-    // public GameObject interactingWith;
+    public GameObject interactingWith;
+    public int dailyFeedings = 2;
 
     public GameObject carrier;
     public bool isCheckedIn = false;
@@ -30,7 +31,7 @@ public class CatController : MonoBehaviour
     public Room currentRoom;
     List<Tile> openList = new List<Tile>();
     List<Tile> closedList = new List<Tile>();
-    Vector2 targetLocation = new Vector2(0.0f, 0.0f);
+    public Vector2 targetLocation = new Vector2(0.0f, 0.0f);
     public int stepInPath = 1;
     class Tile
     {
@@ -51,10 +52,12 @@ public class CatController : MonoBehaviour
         if (status == Status.Content && autonomous) {
             if (TimeManager.timeOfDay == TimeOfDay.Night && activity != Activity.Sleeping) {
                 status = Status.Tired;
-                activity = Activity.Sleeping;
+                GetItemLocation();
+                newStatusTime = 7.0f;
+            } else if (TimeManager.timeOfDay == TimeOfDay.Night && newStatusTime != 7.0f) {
+                newStatusTime = 7.0f;
             } else if (TimeManager.time == newStatusTime) {
                 GetNewStatus();
-                GetPath();
             }
         }
 
@@ -74,42 +77,64 @@ public class CatController : MonoBehaviour
                 if (stepInPath < (closedList.Count - 1)) {
                     stepInPath++;
                 } else {
-                    autonomous = true;
-                    satisfyTimer = 1.0f;
-
-                    switch (status) {
-                        case Status.Hungry:
-                            activity = Activity.Eating;
-                            break;
-                        case Status.Thirsty:
-                            activity = Activity.Drinking;
-                            break;
-                        case Status.Disgusted:
-                            activity = Activity.UsingLitterBox;
-                            break;
-                        case Status.Tired:
-                            activity = Activity.Sleeping;
-                            break;
-                        case Status.Bored:
-                            activity = Activity.Playing;
-                            break;
-                        case Status.Lonely:
-                            activity = Activity.BeingPetted;
-                            break;
-                        default:
-                            activity = Activity.Waiting;
-                            break;
-                    }
+                    ReachItem();
                 }
             }
+        } else if (activity == Activity.WaitingForUnoccupied && status != Status.Content) {
+            GetItemLocation();
+        } else if (activity == Activity.WaitingForUses && status != Status.Content && interactingWith != null) {
+            ReachItem();
         }
 
         if (satisfyTimer >= 0) {
             satisfyTimer -= Time.deltaTime;
             if (satisfyTimer < 0) {
                 SatisfyCat();
-                targetLocation = new Vector2(0.5f, 0.5f);
             }
+        }
+    }
+
+    void ReachItem() {
+        autonomous = true;
+        bool isSatisfied = true;
+
+        if (interactingWith != null && (status == Status.Hungry || status == Status.Thirsty || status == Status.Disgusted)) {
+            isSatisfied = interactingWith.GetComponent<ItemController>().CatInteract();
+        }
+
+        if (isSatisfied) {
+            satisfyTimer = 1.0f;
+            switch (status) {
+                case Status.Hungry:
+                    activity = Activity.Eating;
+                    break;
+                case Status.Thirsty:
+                    activity = Activity.Drinking;
+                    break;
+                case Status.Disgusted:
+                    activity = Activity.UsingLitterBox;
+                    if (interactingWith != null) {
+                        transform.position = interactingWith.transform.position;
+                    }
+                    break;
+                case Status.Tired:
+                    activity = Activity.Sleeping;
+                    if (interactingWith != null) {
+                        transform.position = interactingWith.transform.position;
+                    }
+                    break;
+                case Status.Bored:
+                    activity = Activity.Playing;
+                    break;
+                case Status.Lonely:
+                    activity = Activity.BeingPetted;
+                    break;
+                default:
+                    activity = Activity.Waiting;
+                    break;
+            }
+        } else {
+            activity = Activity.WaitingForUses;
         }
     }
 
@@ -119,13 +144,15 @@ public class CatController : MonoBehaviour
             openList.Clear();
             closedList.Clear();
             stepInPath = 1;
-
-            Tile currentTile = CreateNewTile(new Vector2(transform.position.x, transform.position.y), null, true);
+            Vector2 currentTileLocation = new Vector2(transform.position.x, transform.position.y);
+            Tile currentTile = CreateNewTile(currentTileLocation, null, true);
             closedList.Add(currentTile);
 
             AddNewTiles();
 
             activity = Activity.Moving;
+        } else {
+            ReachItem();
         }
     }
 
@@ -195,16 +222,88 @@ public class CatController : MonoBehaviour
         bool isStatusValid = false;
 
         while (!isStatusValid) {
-            int newStatus = Random.Range(1, (int)Status.Count - 1);
+            int startIndex = 1;
+            if (dailyFeedings < 1) {
+                startIndex = 2;
+            }
+
+            int newStatus = Random.Range(startIndex, (int)Status.Count - 1);
             if (newStatus != (int)lastStatus) {
                 status = (Status)newStatus;
                 isStatusValid = true;
+                GetItemLocation();
             }
+        }
+    }
+
+    void GetItemLocation() {
+        activity = Activity.Checking;
+        InventoryType neededType = InventoryType.None;
+        switch (status) {
+            case Status.Hungry:
+                neededType = InventoryType.FoodDish;
+                break;
+            case Status.Thirsty:
+                neededType = InventoryType.WaterDish;
+                break;
+            case Status.Disgusted:
+                neededType = InventoryType.LitterBox;
+                break;
+            case Status.Tired:
+                neededType = InventoryType.Bed;
+                break;
+            case Status.Bored:
+                neededType = InventoryType.Toy;
+                break;
+            default:
+                neededType = InventoryType.Bed; // remove when implementing choosing random spot for petting
+                break;
+        }
+        if (neededType != InventoryType.None) {
+            GameObject newInteractingWith = RoomManager.RetrieveItemForCat(currentRoom, neededType, transform.position);
+
+            if (newInteractingWith != null) {
+                Vector2 newTarget = new Vector2(0.0f, 0.0f);
+
+                for (int i = 0; i < newInteractingWith.GetComponent<ItemController>().entryPoints.Count; i++) {
+                    if (newTarget.x == 0.0f && newTarget.y == 0.0f) {
+                        newTarget = newInteractingWith.GetComponent<ItemController>().entryPoints[i];
+                    } else {
+                        int distanceToOldTile =
+                            (int)(Mathf.Abs(transform.position.x - newTarget.x) + Mathf.Abs(transform.position.y - newTarget.y));
+                        int distanceToNewTile =
+                            (int)(Mathf.Abs(transform.position.x - newInteractingWith.GetComponent<ItemController>().entryPoints[i].x)
+                                + Mathf.Abs(transform.position.y - newInteractingWith.GetComponent<ItemController>().entryPoints[i].y));
+                        if (distanceToNewTile < distanceToOldTile) {
+                            newTarget = newInteractingWith.GetComponent<ItemController>().entryPoints[i];
+                        }
+                    }
+                }
+
+                if (interactingWith != null) {
+                    interactingWith.GetComponent<ItemController>().isOccupied = false;
+                }
+                newInteractingWith.GetComponent<ItemController>().isOccupied = true;
+                interactingWith = newInteractingWith;
+                if (lastStatus == Status.Tired) {
+                    transform.position = targetLocation;
+                }
+                targetLocation = newTarget;
+                GetPath();
+            } else {
+                activity = Activity.WaitingForUnoccupied;
+            }
+        } else {
+            // get random spot for petting
         }
     }
 
     public void SatisfyCat()
     {
+        if (interactingWith != null) {
+            interactingWith.GetComponent<ItemController>().CatFinishInteract();
+        }
+        lastStatus = status;
         status = Status.Content;
 
         if (
@@ -217,6 +316,9 @@ public class CatController : MonoBehaviour
         } else if (TimeManager.timeOfDay == TimeOfDay.Night && activity == Activity.Sleeping) {
             newStatusTime = 24.0f;
         } else {
+            if (activity == Activity.Eating) {
+                dailyFeedings--;
+            }
             GetNewStatus();
         }
     }
@@ -238,6 +340,7 @@ public class CatController : MonoBehaviour
         closedList.Add(currentTile);
         closedList.Add(CreateNewTile(targetLocation, currentTile, false));
         activity = Activity.Moving;
+        isCheckedIn = true;
     }
 
     public void IntializeCat(

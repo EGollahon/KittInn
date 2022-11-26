@@ -100,24 +100,28 @@ public class ItemController : MonoBehaviour
         isOccupied = true;
         if (type == InventoryType.FoodDish || type == InventoryType.WaterDish || type == InventoryType.LitterBox) {
             if (availableUses > 0) {
-                availableUses--;
-
-                if (availableUses == 0) {
-                    if (type == InventoryType.FoodDish) {
-                        GetComponent<SpriteRenderer>().sprite = foodEmptySprite;
-                    } else if (type == InventoryType.WaterDish) {
-                        GetComponent<SpriteRenderer>().sprite = waterEmptySprite;
-                    } else if (type == InventoryType.LitterBox) {
-                        GetComponent<SpriteRenderer>().sprite = litterDirtySprite;
-                    }
-                }
-
                 return true;
             } else {
                 return false;
             }
         }
         return true;
+    }
+
+    public void CatFinishInteract() {
+        if (availableUses > 0) {
+            availableUses--;
+
+            if (availableUses == 0) {
+                if (type == InventoryType.FoodDish) {
+                    GetComponent<SpriteRenderer>().sprite = foodEmptySprite;
+                } else if (type == InventoryType.WaterDish) {
+                    GetComponent<SpriteRenderer>().sprite = waterEmptySprite;
+                } else if (type == InventoryType.LitterBox) {
+                    GetComponent<SpriteRenderer>().sprite = litterDirtySprite;
+                }
+            }
+        }
     }
 
     public void CatLeave() {

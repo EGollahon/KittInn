@@ -47,6 +47,7 @@ public class GuestManager : MonoBehaviour
             && PromptManager.currentActionSet == AvailableActionSet.CloseComputerPrompt
             && ComputerManager.currentTab == ComputerTab.Guests
             && takingRequests && currentGuests.Count < 13
+            && selectedCat != null
         ) {
             AcceptCat();
         }
@@ -55,7 +56,10 @@ public class GuestManager : MonoBehaviour
             currentTime = TimeManager.time;
 
             for (int i = 0; i < currentGuests.Count; i++) {
-                if (currentGuests[i].GetComponent<CatController>().arrivalTime == currentTime) {
+                if (
+                    !currentGuests[i].GetComponent<CatController>().isCheckedIn
+                    && currentGuests[i].GetComponent<CatController>().arrivalTime == currentTime
+                ) {
                     TimeManager.EnterEditMode();
                     currentGuests[i].GetComponent<CatController>().carrier.SetActive(true);
                     alertFrameReference.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text =
@@ -68,11 +72,14 @@ public class GuestManager : MonoBehaviour
 
                 } else if (currentTime == 0.0f) {
                     currentGuests[i].GetComponent<CatController>().stayLength--;
+                    currentGuests[i].GetComponent<CatController>().dailyFeedings = 2;
                 }
             }
 
             if (currentTime == 7.0f) {
-                requestedGuests.Clear();
+                for (int i = 0; i < requestedGuests.Count; i++) {
+                    DespawnCat(false, requestedGuests[i]);
+                }
                 if (KittInnManager.level == 1) {
                     for (int i = 0; i < 5; i++) {
                         GenerateCat();
@@ -240,6 +247,7 @@ public class GuestManager : MonoBehaviour
         } else {
             requestedGuests.Remove(cat);
         }
+        Destroy(cat.GetComponent<CatController>().carrier);
         Destroy(cat);
     }
 

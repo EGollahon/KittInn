@@ -46,4 +46,46 @@ public class RoomManager : MonoBehaviour
             Destroy(item);
         }
     }
+
+    public static GameObject RetrieveItemForCat(Room catRoom, InventoryType itemType, Vector2 catLocation) {
+        List<GameObject> roomToCheck;
+        GameObject itemToReturn = null;
+        if (catRoom == Room.Sunroom) {
+            roomToCheck = sunroomItems;
+        } else {
+            roomToCheck = libraryItems;
+        }
+        for (int i = 0; i < roomToCheck.Count; i++) {
+            if (roomToCheck[i].GetComponent<ItemController>().type == itemType && !roomToCheck[i].GetComponent<ItemController>().isOccupied) {
+                if (itemToReturn == null) {
+                    itemToReturn = roomToCheck[i];
+                } else {
+                    int distanceToOldTile = (int)(Mathf.Abs(catLocation.x - itemToReturn.transform.position.x) + Mathf.Abs(catLocation.y - itemToReturn.transform.position.y));
+                    int distanceToNewTile = (int)(Mathf.Abs(catLocation.x - roomToCheck[i].transform.position.x) + Mathf.Abs(catLocation.y - roomToCheck[i].transform.position.y));
+                    if (distanceToNewTile < distanceToOldTile) {
+                        itemToReturn = roomToCheck[i];
+                    }
+                }
+            }
+        }
+
+        return itemToReturn;
+    }
+
+    // public static Vector2 RetrieveRandomOpenSpot(Room catRoom) {
+    //     List<GameObject> roomToCheck;
+    //     Vector2 locationToReturn;
+    //     if (catRoom == Room.Sunroom) {
+    //         roomToCheck = sunroomItems;
+    //     } else {
+    //         roomToCheck = libraryItems;
+    //     }
+    //     for (int i = 0; i < roomToCheck.Count; i++) {
+    //         for (int j = 0; j < roomToCheck[i].GetComponent<ItemController>().locations.Count; j++) {
+                
+    //         }
+    //     }
+
+    //     return itemToReturn;
+    // }
 }

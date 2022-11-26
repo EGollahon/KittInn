@@ -1693,7 +1693,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1752,6 +1752,7 @@ MonoBehaviour:
   isOccupied: 0
   filledFood: 0
   availableUses: 0
+  refillCleanInRange: 0
   foodFullSprite: {fileID: -1745718415, guid: acbd24283a3d149fdb61e8e35ab0de23, type: 3}
   foodEmptySprite: {fileID: 322191032, guid: acbd24283a3d149fdb61e8e35ab0de23, type: 3}
   waterFullSprite: {fileID: 1202892839, guid: f32f076ad3f691c729e13b7e72ea6a20, type: 3}
