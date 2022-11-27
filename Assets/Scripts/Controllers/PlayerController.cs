@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     public static Room currentRoom;
     public bool isCarrying = false;
 
+    public GameObject catInRange;
+    public bool isPetting = false;
+
     public GameObject promptManagerReference;
     PromptManager promptManager;
     public GameObject mouseHighlight;
@@ -27,35 +30,42 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        movement = Vector2.zero;
-        movement.x = Input.GetAxis("Horizontal");
-        movement.y = Input.GetAxis("Vertical");
+        if (!isPetting) {
+            movement = Vector2.zero;
+            movement.x = Input.GetAxis("Horizontal");
+            movement.y = Input.GetAxis("Vertical");
 
-        if (movement.x > 0.5f || movement.y > 0.5f || movement.x < -0.5f || movement.y < -0.5f) {
-            playerAnimator.SetBool("IsWalking", true);
+            if (movement.x > 0.5f || movement.y > 0.5f || movement.x < -0.5f || movement.y < -0.5f) {
+                playerAnimator.SetBool("IsWalking", true);
 
-            if (movement.x > 0.5f) {
-                lookDirection.x = 1.0f;
-                lookDirection.y = 1.0f;
-            } else if (movement.x < -0.5f) {
-                lookDirection.x = -1.0f;
-                lookDirection.y = 1.0f;
+                if (movement.x > 0.5f) {
+                    lookDirection.x = 1.0f;
+                    lookDirection.y = 1.0f;
+                } else if (movement.x < -0.5f) {
+                    lookDirection.x = -1.0f;
+                    lookDirection.y = 1.0f;
+                } else {
+                    lookDirection.x = 0.0f;
+                }
+                
+                if (movement.y > 0.5f) {
+                    lookDirection.y = 1.0f;
+                } else if (movement.y < -0.5f) {
+                    lookDirection.y = -1.0f;
+                } else {
+                    lookDirection.y = 0.0f;
+                }
+
+                playerAnimator.SetFloat("LookX", lookDirection.x);
+                playerAnimator.SetFloat("LookY", lookDirection.y);
             } else {
-                lookDirection.x = 0.0f;
+                playerAnimator.SetBool("IsWalking", false);
             }
-            
-            if (movement.y > 0.5f) {
-                lookDirection.y = 1.0f;
-            } else if (movement.y < -0.5f) {
-                lookDirection.y = -1.0f;
-            } else {
-                lookDirection.y = 0.0f;
-            }
-
-            playerAnimator.SetFloat("LookX", lookDirection.x);
-            playerAnimator.SetFloat("LookY", lookDirection.y);
         } else {
-            playerAnimator.SetBool("IsWalking", false);
+            if (catInRange.GetComponent<CatController>().activity != Activity.WaitingForPets && catInRange.GetComponent<CatController>().activity != Activity.BeingPetted) {
+                isPetting = false;
+                promptManager.CatRoomsPrompts();
+            }
         }
 
         if (
@@ -92,6 +102,21 @@ public class PlayerController : MonoBehaviour
             TimeManager.EnterEditMode();
             mouseHighlight.SetActive(true);
             mouseHighlight.GetComponent<MouseHighlightController>().SetHighlightProps();
+        } else if (Input.GetKeyDown("e") && catInRange != null) {
+            if (
+                PromptManager.currentActionSet == AvailableActionSet.StopPetting
+                && catInRange.GetComponent<CatController>().activity == Activity.BeingPetted
+            ) {
+                isPetting = false;
+                catInRange.GetComponent<CatController>().StopPettingCat();
+            } else if (
+                PromptManager.currentActionSet == AvailableActionSet.CatRoomsPromptsWithCats
+                && catInRange.GetComponent<CatController>().activity == Activity.WaitingForPets
+            ) {
+                isPetting = true;
+                catInRange.GetComponent<CatController>().StartPettingCat();
+                promptManager.StopPetting();
+            }
         }
     }
 
@@ -112,5 +137,34 @@ public class PlayerController : MonoBehaviour
 
     public void Place() {
         isCarrying = false;
+    }
+
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Cat") {
+            if (
+                (catInRange == null)
+                || (collider.gameObject.GetComponent<CatController>().activity == Activity.WaitingForPets)
+                || (collider.gameObject.GetComponent<CatController>().status != Status.Content && catInRange.GetComponent<CatController>().activity != Activity.WaitingForPets)
+                || (collider.gameObject.GetComponent<CatController>().status == Status.Content && catInRange.GetComponent<CatController>().status == Status.Content)
+            ) {
+                catInRange = collider.gameObject;
+                // get cat tooltip and set active - transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(true);
+            }
+
+            if (collider.gameObject.GetComponent<CatController>().activity == Activity.WaitingForPets) {
+                promptManager.CatRoomsPromptsWithCats();
+            }
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Cat")
+        {
+            // hide cat tooltip
+            promptManager.CatRoomsPrompts();
+            catInRange = null;
+        }
     }
 }

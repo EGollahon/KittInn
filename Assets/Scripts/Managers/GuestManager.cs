@@ -203,9 +203,9 @@ public class GuestManager : MonoBehaviour
         Food newFavFood;
         int newStayLength;
 
-        newCatName = (CatName)Random.Range(0, (int)CatName.Count - 1);
-        newCoat = (CoatColor)Random.Range(0, (int)CoatColor.Count - 1);
-        newPersonality = (Personality)Random.Range(0, (int)Personality.Count - 1);
+        newCatName = (CatName)Random.Range(0, (int)CatName.Count);
+        newCoat = (CoatColor)Random.Range(0, (int)CoatColor.Count);
+        newPersonality = (Personality)Random.Range(0, (int)Personality.Count);
 
         if (KittInnManager.level == 1) {
             newSpoiledLevel = 1;

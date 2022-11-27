@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 4360623752343651543}
   - component: {fileID: 594086870588169838}
   - component: {fileID: 4542246884707810958}
+  - component: {fileID: 3993141739547200729}
   m_Layer: 0
   m_Name: Cat
-  m_TagString: Untagged
+  m_TagString: Cat
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -102,10 +103,13 @@ MonoBehaviour:
   personality: 0
   spoiledLevel: 0
   favFood: 0
+  autonomous: 0
   status: 0
   lastStatus: 0
   purr: 50
   activity: 0
+  interactingWith: {fileID: 0}
+  dailyFeedings: 2
   carrier: {fileID: 0}
   isCheckedIn: 0
   arrivalTime: 0
@@ -114,4 +118,31 @@ MonoBehaviour:
   newStatusTime: 7.25
   satisfyTimer: -1
   currentRoom: 0
+  targetLocation: {x: 0, y: 0}
   stepInPath: 1
+--- !u!61 &3993141739547200729
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1131989121491371147}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.2, y: 1.2}
+  m_EdgeRadius: 0

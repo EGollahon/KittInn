@@ -27,7 +27,8 @@ public enum AvailableActionSet
     EditCancelPrompt,
     OpenComputerPrompt,
     CloseComputerPrompt,
-    NoActions
+    NoActions,
+    StopPetting
 }
 
 public enum NotebookTab
@@ -115,7 +116,8 @@ public enum Activity {
     LookingForAttention,
     Checking,
     WaitingForUses,
-    WaitingForUnoccupied
+    WaitingForUnoccupied,
+    WaitingForPets
 }
 
 public enum CatName {

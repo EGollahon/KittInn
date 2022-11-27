@@ -34,26 +34,28 @@ public class PromptManager : MonoBehaviour
     }
 
     public void CatRoomsPrompts() {
+        notebookPrompt.transform.Find("Letter").gameObject.GetComponent<TextMeshProUGUI>().text = "Z";
         notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Open Notebook";
         SetPromptsVisibility(true, false, true, false, false, false);
         currentActionSet = AvailableActionSet.CatRoomsPrompts;
     }
 
     public void CatRoomsPromptsWithCats() {
+        notebookPrompt.transform.Find("Letter").gameObject.GetComponent<TextMeshProUGUI>().text = "Z";
         notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Open Notebook";
-        placePrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Pick Up";
-        placePrompt.GetComponent<RectTransform>().anchoredPosition = new Vector2(489.0f, 48.0f);
-        SetPromptsVisibility(true, false, true, false, true, true);
+        SetPromptsVisibility(true, false, true, false, true, false);
         currentActionSet = AvailableActionSet.CatRoomsPromptsWithCats;
     }
     
     public void OpenNotebookPrompt() {
+        notebookPrompt.transform.Find("Letter").gameObject.GetComponent<TextMeshProUGUI>().text = "Z";
         notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Open Notebook";
         SetPromptsVisibility(true, false, false, false, false, false);
         currentActionSet = AvailableActionSet.OpenNotebookPrompt;
     }
 
     public void CloseNotebookPrompt() {
+        notebookPrompt.transform.Find("Letter").gameObject.GetComponent<TextMeshProUGUI>().text = "Z";
         notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Close Notebook";
         SetPromptsVisibility(true, false, false, false, false, false);
         currentActionSet = AvailableActionSet.CloseNotebookPrompt;
@@ -86,12 +88,14 @@ public class PromptManager : MonoBehaviour
     }
 
     public void OpenComputerPrompt() {
+        notebookPrompt.transform.Find("Letter").gameObject.GetComponent<TextMeshProUGUI>().text = "Z";
         notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Open Computer";
         SetPromptsVisibility(true, false, false, false, false, false);
         currentActionSet = AvailableActionSet.OpenComputerPrompt;
     }
 
     public void CloseComputerPrompt() {
+        notebookPrompt.transform.Find("Letter").gameObject.GetComponent<TextMeshProUGUI>().text = "Z";
         notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Close Computer";
         SetPromptsVisibility(true, false, false, false, false, false);
         currentActionSet = AvailableActionSet.CloseComputerPrompt;
@@ -100,5 +104,12 @@ public class PromptManager : MonoBehaviour
     public void NoActions() {
         SetPromptsVisibility(false, false, false, false, false, false);
         currentActionSet = AvailableActionSet.NoActions;
+    }
+
+    public void StopPetting() {
+        notebookPrompt.transform.Find("Letter").gameObject.GetComponent<TextMeshProUGUI>().text = "E";
+        notebookPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Stop Petting";
+        SetPromptsVisibility(true, false, false, false, false, false);
+        currentActionSet = AvailableActionSet.StopPetting;
     }
 }

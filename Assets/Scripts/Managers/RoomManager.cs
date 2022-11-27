@@ -72,20 +72,43 @@ public class RoomManager : MonoBehaviour
         return itemToReturn;
     }
 
-    // public static Vector2 RetrieveRandomOpenSpot(Room catRoom) {
-    //     List<GameObject> roomToCheck;
-    //     Vector2 locationToReturn;
-    //     if (catRoom == Room.Sunroom) {
-    //         roomToCheck = sunroomItems;
-    //     } else {
-    //         roomToCheck = libraryItems;
-    //     }
-    //     for (int i = 0; i < roomToCheck.Count; i++) {
-    //         for (int j = 0; j < roomToCheck[i].GetComponent<ItemController>().locations.Count; j++) {
-                
-    //         }
-    //     }
+    public static Vector2 RetrieveEmptySpace(Room catRoom) {
+        List<GameObject> roomToCheck;
+        List<Vector2> occupiedSpaces = new List<Vector2>();
+        List<Vector2> unoccupiedSpaces = new List<Vector2>();
+        if (catRoom == Room.Sunroom) {
+            roomToCheck = sunroomItems;
+        } else {
+            roomToCheck = libraryItems;
+        }
 
-    //     return itemToReturn;
-    // }
+        for (int i = 0; i < roomToCheck.Count; i++) {
+            for (int j = 0; j < roomToCheck[i].GetComponent<ItemController>().locations.Count; j++) {
+                occupiedSpaces.Add(roomToCheck[i].GetComponent<ItemController>().locations[j]);
+            }
+        }
+
+        if (catRoom == Room.Sunroom) {
+            for (int i = 1; i < 8; i++) {
+                for (int j = 0; j < 14; j++) {
+                    Vector2 possibleSpace = new Vector2(-((float)j + 0.94f), (float)i + 0.8f);
+                    if (!occupiedSpaces.Exists(e => e == possibleSpace)) {
+                        unoccupiedSpaces.Add(possibleSpace);
+                    }
+                }
+            }
+        } else {
+            for (int i = 1; i < 7; i++) {
+                for (int j = 0; j < 10; j++) {
+                    Vector2 possibleSpace = new Vector2((float)j + 0.5f, (float)i + 0.8f);
+                    if (!occupiedSpaces.Exists(e => e == possibleSpace)) {
+                        unoccupiedSpaces.Add(possibleSpace);
+                    }
+                }
+            }
+        }
+
+        Vector2 locationToReturn = unoccupiedSpaces[Random.Range(0, unoccupiedSpaces.Count)];
+        return locationToReturn;
+    }
 }

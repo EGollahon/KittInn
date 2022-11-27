@@ -9,6 +9,7 @@ TagManager:
   - Door
   - Item
   - Carrier Spot
+  - Cat
   layers:
   - Default
   - TransparentFX

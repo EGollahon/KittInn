@@ -77,7 +77,11 @@ public class CatController : MonoBehaviour
                 if (stepInPath < (closedList.Count - 1)) {
                     stepInPath++;
                 } else {
-                    ReachItem();
+                    if (status != Status.Lonely) {
+                        ReachItem();
+                    } else {
+                        activity = Activity.WaitingForPets;
+                    }
                 }
             }
         } else if (activity == Activity.WaitingForUnoccupied && status != Status.Content) {
@@ -183,8 +187,6 @@ public class CatController : MonoBehaviour
         locationsToAdd.Add(new Vector2(parentTile.location.x, parentTile.location.y - 1.0f));
 
         for (int i = 0; i < locationsToAdd.Count; i++) {
-            // if a tile location is equal to one of the room manager provided items, avoid
-
             if (
                 !closedList.Exists(e => e.location == locationsToAdd[i])
                 && !openList.Exists(e => e.location == locationsToAdd[i])
@@ -227,7 +229,7 @@ public class CatController : MonoBehaviour
                 startIndex = 2;
             }
 
-            int newStatus = Random.Range(startIndex, (int)Status.Count - 1);
+            int newStatus = Random.Range(startIndex, (int)Status.Count);
             if (newStatus != (int)lastStatus) {
                 status = (Status)newStatus;
                 isStatusValid = true;
@@ -255,8 +257,11 @@ public class CatController : MonoBehaviour
             case Status.Bored:
                 neededType = InventoryType.Toy;
                 break;
+            case Status.Lonely:
+                neededType = InventoryType.None;
+                break;
             default:
-                neededType = InventoryType.Bed; // remove when implementing choosing random spot for petting
+                neededType = InventoryType.None;
                 break;
         }
         if (neededType != InventoryType.None) {
@@ -294,7 +299,11 @@ public class CatController : MonoBehaviour
                 activity = Activity.WaitingForUnoccupied;
             }
         } else {
-            // get random spot for petting
+            targetLocation = RoomManager.RetrieveEmptySpace(currentRoom);
+            if (interactingWith != null) {
+                interactingWith.GetComponent<ItemController>().isOccupied = false;
+            }
+            GetPath();
         }
     }
 
@@ -325,8 +334,7 @@ public class CatController : MonoBehaviour
 
     public void StartPettingCat()
     {
-        activity = Activity.BeingPetted;
-        SatisfyCat();
+        ReachItem();
     }
 
     public void StopPettingCat()

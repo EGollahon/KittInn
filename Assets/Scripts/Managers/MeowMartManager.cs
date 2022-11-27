@@ -46,6 +46,7 @@ public class MeowMartManager : MonoBehaviour
             Input.GetKeyDown("x")
             && PromptManager.currentActionSet == AvailableActionSet.CloseComputerPrompt
             && ComputerManager.currentTab == ComputerTab.MeowMart
+            && selectedItem != null
         ) {
             if (isBuying && price <= MoneyManager.money) {
                 BuyItems();
