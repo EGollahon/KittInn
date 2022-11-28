@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 353322056}
   - component: {fileID: 353322058}
   - component: {fileID: 353322057}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 411021352}
   - component: {fileID: 411021354}
   - component: {fileID: 411021353}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Letter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -222,7 +222,7 @@ GameObject:
   - component: {fileID: 584247321}
   - component: {fileID: 584247323}
   - component: {fileID: 584247322}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: FoodSelect Tooltip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -304,7 +304,7 @@ GameObject:
   - component: {fileID: 599694020}
   - component: {fileID: 599694022}
   - component: {fileID: 599694021}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -380,7 +380,7 @@ GameObject:
   - component: {fileID: 878546066}
   - component: {fileID: 878546068}
   - component: {fileID: 878546067}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -456,7 +456,7 @@ GameObject:
   - component: {fileID: 885571552}
   - component: {fileID: 885571554}
   - component: {fileID: 885571553}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Description
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -592,7 +592,7 @@ GameObject:
   - component: {fileID: 948582683}
   - component: {fileID: 948582682}
   - component: {fileID: 948582681}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -714,7 +714,7 @@ GameObject:
   - component: {fileID: 976013226}
   - component: {fileID: 976013225}
   - component: {fileID: 976013224}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -835,7 +835,7 @@ GameObject:
   - component: {fileID: 1054933231}
   - component: {fileID: 1054933233}
   - component: {fileID: 1054933232}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: RefillClean Tooltip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -913,7 +913,7 @@ GameObject:
   - component: {fileID: 1072141161}
   - component: {fileID: 1072141163}
   - component: {fileID: 1072141162}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -989,7 +989,7 @@ GameObject:
   - component: {fileID: 1235707526}
   - component: {fileID: 1235707528}
   - component: {fileID: 1235707527}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1066,7 +1066,7 @@ GameObject:
   - component: {fileID: 1247334521}
   - component: {fileID: 1247334520}
   - component: {fileID: 1247334519}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1187,7 +1187,7 @@ GameObject:
   - component: {fileID: 1248588750}
   - component: {fileID: 1248588752}
   - component: {fileID: 1248588751}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1264,7 +1264,7 @@ GameObject:
   - component: {fileID: 1283244667}
   - component: {fileID: 1283244666}
   - component: {fileID: 1283244665}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1386,7 +1386,7 @@ GameObject:
   - component: {fileID: 1392988436}
   - component: {fileID: 1392988435}
   - component: {fileID: 1392988434}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1508,7 +1508,7 @@ GameObject:
   - component: {fileID: 1667398336}
   - component: {fileID: 1667398335}
   - component: {fileID: 1667398334}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Slot3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1780,7 +1780,7 @@ GameObject:
   - component: {fileID: 5449099245724329294}
   - component: {fileID: 7185588033087646389}
   - component: {fileID: 8459920265701143135}
-  m_Layer: 6
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}

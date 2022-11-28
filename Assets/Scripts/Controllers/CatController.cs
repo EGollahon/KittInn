@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
 public class CatController : MonoBehaviour
 {
+    float currentTime;
     public static float walkSpeed = 2.0f;
     public CatName catName;
     public CoatColor coat;
@@ -14,7 +17,7 @@ public class CatController : MonoBehaviour
     public bool autonomous = false;
     public Status status = Status.Content;
     public Status lastStatus = Status.Content;
-    public float purr = 50.0f;
+    public int purr = 50;
     public Activity activity;
     public GameObject interactingWith;
     public int dailyFeedings = 2;
@@ -24,6 +27,14 @@ public class CatController : MonoBehaviour
     public float arrivalTime;
     public float checkOutTime;
     public int stayLength;
+
+    public Sprite contentSprite;
+    public Sprite hungrySprite;
+    public Sprite thirstySprite;
+    public Sprite disgustedSprite;
+    public Sprite tiredSprite;
+    public Sprite boredSprite;
+    public Sprite lonelySprite;
 
     public float newStatusTime = 0.0f;
     public float satisfyTimer = -1.0f;
@@ -50,18 +61,23 @@ public class CatController : MonoBehaviour
     void Update()
     {
         if (status == Status.Content && autonomous) {
+            Debug.Log("if youre content");
             if (TimeManager.timeOfDay == TimeOfDay.Night && activity != Activity.Sleeping) {
-                status = Status.Tired;
-                GetItemLocation();
+                Debug.Log("1");
+                GetNewStatus(true);
                 newStatusTime = 7.0f;
             } else if (TimeManager.timeOfDay == TimeOfDay.Night && newStatusTime != 7.0f) {
+                Debug.Log("2");
                 newStatusTime = 7.0f;
             } else if (TimeManager.time == newStatusTime) {
-                GetNewStatus();
+                Debug.Log("3");
+                GetNewStatus(false);
             }
+            Debug.Log("end content");
         }
 
         if (activity == Activity.Moving) {
+            Debug.Log("moving");
             int xInput = (int)(closedList[stepInPath].location.x - closedList[stepInPath - 1].location.x);
             int yInput = (int)(closedList[stepInPath].location.y - closedList[stepInPath - 1].location.y);
 
@@ -91,11 +107,41 @@ public class CatController : MonoBehaviour
         }
 
         if (satisfyTimer >= 0) {
+            Debug.Log("satisfy");
             satisfyTimer -= Time.deltaTime;
             if (satisfyTimer < 0) {
                 SatisfyCat();
             }
         }
+
+        if (TimeManager.time != currentTime) {
+            Debug.Log("cat time change");
+            currentTime = TimeManager.time;
+
+            if (activity == Activity.WaitingForUnoccupied || activity == Activity.WaitingForUses || activity == Activity.WaitingForPets) {
+                SubtractPurr(2);
+            } else if (activity == Activity.Sleeping || activity == Activity.Playing || activity == Activity.BeingPetted) {
+                AddPurr(2);
+            }
+        }
+    }
+
+    void AddPurr(int amount) {
+        if (purr + amount <= 100) {
+            purr += amount;
+        } else {
+            purr = 100;
+        }
+        RefreshTooltip();
+    }
+
+    void SubtractPurr(int amount) {
+        if (purr - amount >= 0) {
+            purr -= amount;
+        } else {
+            purr = 0;
+        }
+        RefreshTooltip();
     }
 
     void ReachItem() {
@@ -219,23 +265,33 @@ public class CatController : MonoBehaviour
         return tile;
     }
 
-    void GetNewStatus()
+    void GetNewStatus(bool isSleep)
     {
+        Debug.Log("get new status " + TimeManager.time.ToString());
         bool isStatusValid = false;
 
-        while (!isStatusValid) {
-            int startIndex = 1;
-            if (dailyFeedings < 1) {
-                startIndex = 2;
-            }
+        if (!isSleep) {
+            while (!isStatusValid) {
+                int startIndex = 1;
+                if (dailyFeedings < 1) {
+                    startIndex = 2;
+                }
 
-            int newStatus = Random.Range(startIndex, (int)Status.Count);
-            if (newStatus != (int)lastStatus) {
-                status = (Status)newStatus;
-                isStatusValid = true;
-                GetItemLocation();
+                int newStatus = Random.Range(startIndex, (int)Status.Count);
+                if (newStatus != (int)lastStatus) {
+                    status = (Status)newStatus;
+                    isStatusValid = true;
+                }
+                
             }
+        } else {
+            status = Status.Tired;
+            isStatusValid = true;
         }
+
+        transform.Find("Canvas/Status Thought/Image").gameObject.GetComponent<Image>().sprite = GetStatusSprite();
+        RefreshTooltip();
+        GetItemLocation();
     }
 
     void GetItemLocation() {
@@ -299,6 +355,12 @@ public class CatController : MonoBehaviour
                 activity = Activity.WaitingForUnoccupied;
             }
         } else {
+            if (interactingWith != null) {
+                interactingWith.GetComponent<ItemController>().isOccupied = false;
+            }
+            if (lastStatus == Status.Tired) {
+                transform.position = targetLocation;
+            }
             targetLocation = RoomManager.RetrieveEmptySpace(currentRoom);
             if (interactingWith != null) {
                 interactingWith.GetComponent<ItemController>().isOccupied = false;
@@ -314,6 +376,8 @@ public class CatController : MonoBehaviour
         }
         lastStatus = status;
         status = Status.Content;
+        transform.Find("Canvas/Status Thought/Image").gameObject.GetComponent<Image>().sprite = GetStatusSprite();
+        RefreshTooltip();
 
         if (
             activity == Activity.Sleeping
@@ -327,8 +391,17 @@ public class CatController : MonoBehaviour
         } else {
             if (activity == Activity.Eating) {
                 dailyFeedings--;
+                if (interactingWith != null) {
+                    if (interactingWith.GetComponent<ItemController>().filledFood == favFood) {
+                        AddPurr(10);
+                    } else {
+                        AddPurr(5);
+                    }
+                }
+            } else if (activity == Activity.Drinking || activity == Activity.UsingLitterBox) {
+                AddPurr(10);
             }
-            GetNewStatus();
+            GetNewStatus(false);
         }
     }
 
@@ -339,7 +412,7 @@ public class CatController : MonoBehaviour
 
     public void StopPettingCat()
     {
-        GetNewStatus();
+        GetNewStatus(false);
     }
 
     public void WalkOutOfCarrier(Vector2 carrierLookDirection) {
@@ -368,5 +441,57 @@ public class CatController : MonoBehaviour
         favFood = newFavFood;
         stayLength = newStayLength;
         carrier = newCarrier;
+
+        transform.Find("Canvas/Cat Tooltip/Name").gameObject.GetComponent<TextMeshProUGUI>().text = newCatName.ToString();
+        transform.Find("Canvas/Status Thought/Image").gameObject.GetComponent<Image>().sprite = GetStatusSprite();
+        RefreshTooltip();
+    }
+
+    public Sprite GetStatusSprite() {
+        switch (status) {
+            case Status.Content:
+                return contentSprite;
+            case Status.Hungry:
+                return hungrySprite;
+            case Status.Thirsty:
+                return thirstySprite;
+            case Status.Disgusted:
+                return disgustedSprite;
+            case Status.Tired:
+                return tiredSprite;
+            case Status.Bored:
+                return boredSprite;
+            case Status.Lonely:
+                return lonelySprite;
+            default:
+                return contentSprite;
+        }
+    }
+
+    void RefreshTooltip() {
+        transform.Find("Canvas/Cat Tooltip/Status Bubble/Image").gameObject.GetComponent<Image>().sprite = GetStatusSprite();
+        transform.Find("Canvas/Cat Tooltip/Status").gameObject.GetComponent<TextMeshProUGUI>().text = status.ToString();
+        float newMaskWidth = (1.5625f * ((float)purr / 100.0f)) + 0.03125f;
+        transform.Find("Canvas/Cat Tooltip/Purr Meter Mask").gameObject.GetComponent<Image>().rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newMaskWidth);
+        transform.Find("Canvas/Cat Tooltip/Purr Percent").gameObject.GetComponent<TextMeshProUGUI>().text = purr.ToString() + "%";
+    }
+
+    void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Bea")
+        {
+            RefreshTooltip();
+            transform.Find("Canvas/Cat Tooltip").gameObject.SetActive(true);
+            transform.Find("Canvas/Status Thought").gameObject.SetActive(false);
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Bea")
+        {
+            transform.Find("Canvas/Cat Tooltip").gameObject.SetActive(false);
+            transform.Find("Canvas/Status Thought").gameObject.SetActive(true);
+        }
     }
 }

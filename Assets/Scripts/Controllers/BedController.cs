@@ -72,9 +72,9 @@ public class BedController : MonoBehaviour
         fastForwardPrompt.SetActive(false);
         promptManager.NoActions();
         gameObject.layer = LayerMask.NameToLayer("Being Carried");
-        bea.transform.position = transform.position;
         bea.GetComponent<PlayerController>().isSleeping = true;
         bea.GetComponent<Animator>().SetBool("IsSleeping", true);
+        bea.transform.position = transform.position;
         TimeManager.lengthOfQuarterHour = 0.25f;
     }
 

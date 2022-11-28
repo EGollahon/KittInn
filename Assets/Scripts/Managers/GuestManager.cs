@@ -53,6 +53,7 @@ public class GuestManager : MonoBehaviour
         }
 
         if (TimeManager.time != currentTime) {
+            Debug.Log("guest manager change time");
             currentTime = TimeManager.time;
 
             for (int i = 0; i < currentGuests.Count; i++) {
@@ -77,6 +78,7 @@ public class GuestManager : MonoBehaviour
             }
 
             if (currentTime == 7.0f) {
+                Debug.Log("roll over day");
                 for (int i = 0; i < requestedGuests.Count; i++) {
                     DespawnCat(false, requestedGuests[i]);
                 }
