@@ -10,8 +10,11 @@ public class TimeManager : MonoBehaviour
     public static string timeString = "7:00 AM";
     public static TimeOfDay timeOfDay = TimeOfDay.Morning;
     static float secondTimer = 0.0f;
-    static float lengthOfQuarterHour = 2.0f;
-    static bool isEditMode = false;
+    public static float lengthOfQuarterHour = 2.0f;
+    public static bool isEditMode = false;
+
+    public GameObject cameraReference;
+    Camera mainCamera;
 
     public GameObject timeDisplayReference;
     TextMeshProUGUI timeDisplay;
@@ -21,6 +24,7 @@ public class TimeManager : MonoBehaviour
 
     void Start()
     {
+        mainCamera = cameraReference.GetComponent<Camera>();
         timeDisplay = timeDisplayReference.GetComponent<TextMeshProUGUI>();
         timeOfDayDisplay = timeOfDayReference.GetComponent<TextMeshProUGUI>();
         TranslateTime();
@@ -40,12 +44,16 @@ public class TimeManager : MonoBehaviour
 
                 if (time > 6.75f && time < 12.0f) {
                     timeOfDay = TimeOfDay.Morning;
+                    mainCamera.backgroundColor = new Color(0.3411765f, 0.282353f, 0.3215686f);
                 } else if (time >= 12.0f && time < 18.0f) {
                     timeOfDay = TimeOfDay.Day;
+                    mainCamera.backgroundColor = new Color(0.3411765f, 0.282353f, 0.3215686f);
                 } else if (time >= 18.0f && time < 23.25f) {
                     timeOfDay = TimeOfDay.Evening;
+                    mainCamera.backgroundColor = new Color(0.3411765f, 0.282353f, 0.3215686f);
                 } else {
                     timeOfDay = TimeOfDay.Night;
+                    mainCamera.backgroundColor = new Color(0.2941177f, 0.2392157f, 0.2666667f);
                 }
 
                 TranslateTime();

@@ -11,9 +11,10 @@ public class PlayerController : MonoBehaviour
     public Vector2 lookDirection = new Vector2(0.0f, -1.0f);
     public static Room currentRoom;
     public bool isCarrying = false;
+    public bool isPetting = false;
+    public bool isSleeping = false;
 
     public GameObject catInRange;
-    public bool isPetting = false;
 
     public GameObject promptManagerReference;
     PromptManager promptManager;
@@ -30,7 +31,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (!isPetting) {
+        if (!isPetting && !isSleeping) {
             movement = Vector2.zero;
             movement.x = Input.GetAxis("Horizontal");
             movement.y = Input.GetAxis("Vertical");
@@ -61,7 +62,7 @@ public class PlayerController : MonoBehaviour
             } else {
                 playerAnimator.SetBool("IsWalking", false);
             }
-        } else {
+        } else if (isPetting) {
             if (catInRange.GetComponent<CatController>().activity != Activity.WaitingForPets && catInRange.GetComponent<CatController>().activity != Activity.BeingPetted) {
                 isPetting = false;
                 promptManager.CatRoomsPrompts();
