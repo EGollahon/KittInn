@@ -141,7 +141,30 @@ public class GuestManager : MonoBehaviour
             guestsDetailReference.transform.Find("Level Star").gameObject.GetComponent<Image>().sprite = twoStarSprite;
         }
 
-        guestsDetailReference.transform.Find("Food/Food Name").gameObject.GetComponent<TextMeshProUGUI>().text = cat.favFood.ToString();
+        string foodString = "";
+        switch (cat.favFood) {
+            case Food.SavoryKibble:
+                foodString = "Savory Kibble";
+                break;
+            case Food.BeefPate:
+                foodString = "Beef Pate";
+                break;
+            case Food.ChickenKibble:
+                foodString = "Chicken Kibble";
+                break;
+            case Food.SeafoodKibble:
+                foodString = "Seafood Kibble";
+                break;
+            case Food.SalmonPate:
+                foodString = "Salmon Pate";
+                break;
+            case Food.TurkeyInGravy:
+                foodString = "Turkey in Gravy";
+                break;
+            default:
+                break;
+        }
+        guestsDetailReference.transform.Find("Food/Food Name").gameObject.GetComponent<TextMeshProUGUI>().text = foodString;
         int index = foods.FindIndex(element => element.foodName == cat.favFood);
         if (index > -1) {
             guestsDetailReference.transform.Find("Food/Food Sprite").gameObject.GetComponent<Image>().sprite = foods[index].displaySprite;
@@ -165,12 +188,25 @@ public class GuestManager : MonoBehaviour
 
         if (takingRequests && currentGuests.Count < 13) {
             acceptPrompt.SetActive(true);
+            guestsDetailReference.transform.Find("Status Bubble").gameObject.SetActive(false);
             guestsDetailReference.transform.Find("Status").gameObject.SetActive(false);
+            guestsDetailReference.transform.Find("Purr Background").gameObject.SetActive(false);
+            guestsDetailReference.transform.Find("Purr Mask").gameObject.SetActive(false);
+            guestsDetailReference.transform.Find("Purr Percent").gameObject.SetActive(false);
         } else {
             acceptPrompt.SetActive(false);
-            // set status sprite and text
+
+            guestsDetailReference.transform.Find("Status Bubble/Status Icon").gameObject.GetComponent<Image>().sprite = selectedCat.GetStatusSprite();
+            guestsDetailReference.transform.Find("Status").gameObject.GetComponent<TextMeshProUGUI>().text = selectedCat.status.ToString();
+            float newMaskHeight = (200.0f * ((float)selectedCat.purr / 100.0f)) + 1.0f;
+            guestsDetailReference.transform.Find("Purr Mask").gameObject.GetComponent<Image>().rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, newMaskHeight);
+            guestsDetailReference.transform.Find("Purr Percent").gameObject.GetComponent<TextMeshProUGUI>().text = selectedCat.purr.ToString() + "%";
+
+            guestsDetailReference.transform.Find("Status Bubble").gameObject.SetActive(true);
             guestsDetailReference.transform.Find("Status").gameObject.SetActive(true);
-            // set purr
+            guestsDetailReference.transform.Find("Purr Background").gameObject.SetActive(true);
+            guestsDetailReference.transform.Find("Purr Mask").gameObject.SetActive(true);
+            guestsDetailReference.transform.Find("Purr Percent").gameObject.SetActive(true);
         }
     }
 

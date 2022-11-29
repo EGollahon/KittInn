@@ -88,7 +88,7 @@ public enum Food {
 
     SeafoodKibble,
     SalmonPate,
-    TurkeyInGravy,
+    TurkeyInGravy
 }
 
 public enum Status {
