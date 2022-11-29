@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class CarrierController : MonoBehaviour
 {
-    Rigidbody2D carrierRigidbody;
     public GameObject ownCat;
     public GameObject alertFrame;
     public int color;
@@ -13,9 +12,13 @@ public class CarrierController : MonoBehaviour
     public bool isCatInside = true;
     public bool isArriving = true;
     public bool isLeaving = false;
+    public bool isWaitingForCat = false;
+
+    public float leaveTimer = -1.0f;
 
     public GameObject bea;
     public GameObject carrierSpot;
+    public GameObject leaveZone;
 
     Sprite forwardSprite;
     Sprite backwardSprite;
@@ -33,10 +36,10 @@ public class CarrierController : MonoBehaviour
 
     SpriteRenderer carrierRenderer;
     PromptManager promptManager;
+    GuestManager guestManager;
 
     void Start()
     {
-        carrierRigidbody = GetComponent<Rigidbody2D>();
         carrierRenderer = GetComponent<SpriteRenderer>();
 
         color = Random.Range(1, 4);
@@ -59,6 +62,13 @@ public class CarrierController : MonoBehaviour
 
     void Update()
     {
+        if (leaveTimer >= 0) {
+            leaveTimer -= Time.deltaTime;
+            if (leaveTimer < 0) {
+                Leave();
+            }
+        }
+
         if (
             Input.GetKeyDown("c")
             && bea != null
@@ -66,19 +76,14 @@ public class CarrierController : MonoBehaviour
             && canPickUp
         ) {
             PickUp();
-        } else if (
-            Input.GetKeyDown("x")
-            && bea != null
-            && isPickedUp
-            && PromptManager.currentActionSet == AvailableActionSet.PlacePrompt
-        ) {
-            Place();
         }
 
         if (bea != null) {
             if (
                 (isPickedUp && isCatInside && isArriving && PlayerController.currentRoom != Room.Other)
                 || (isPickedUp && !isCatInside && isArriving && carrierSpot != null)
+                || (isPickedUp && !isCatInside && isLeaving && PlayerController.currentRoom == ownCat.GetComponent<CatController>().currentRoom)
+                || (isPickedUp && isCatInside && isLeaving && leaveZone != null)
             ) {
                 promptManager.PlacePrompt();
             } else {
@@ -100,12 +105,7 @@ public class CarrierController : MonoBehaviour
                 carrierRenderer.sprite = sideSprite;
                 carrierRenderer.flipX = true;
             }
-        }
-    }
 
-    void FixedUpdate()
-    {
-        if (isPickedUp) {
             Vector2 newPos = bea.GetComponent<Rigidbody2D>().position;
             
             if (bea.GetComponent<PlayerController>().lookDirection == new Vector2(0.0f, -1.0f)) {
@@ -120,22 +120,26 @@ public class CarrierController : MonoBehaviour
                 newPos.y += 0.5f;
             }
 
-            carrierRigidbody.MovePosition(newPos);
+            transform.position = newPos;
         }
+    }
+
+    public void PassGuestManager(GuestManager reference) {
+        guestManager = reference;
     }
 
     public void PickUp() {
         isPickedUp = true;
         transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
         canPickUp = false;
-        bea.GetComponent<PlayerController>().PickUp();
+        bea.GetComponent<PlayerController>().PickUp(gameObject);
         gameObject.layer = LayerMask.NameToLayer("Being Carried");
     }
 
     public void Place() {
         if (
-            isCatInside && isArriving
-            && PlayerController.currentRoom != Room.Other
+            (isCatInside && isArriving && PlayerController.currentRoom != Room.Other)
+            || (!isCatInside && isLeaving && PlayerController.currentRoom == ownCat.GetComponent<CatController>().currentRoom)
         ) {
             bea.GetComponent<PlayerController>().Place();
             isPickedUp = false;
@@ -183,19 +187,31 @@ public class CarrierController : MonoBehaviour
                 }
             }
 
-            carrierRigidbody.MovePosition(newPos);
+            transform.position = newPos;
             gameObject.layer = LayerMask.NameToLayer("Default");
 
+            isWaitingForCat = true;
+            transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
+            canPickUp = false;
             CatController ownCatController = ownCat.GetComponent<CatController>();
-            ownCatController.currentRoom = PlayerController.currentRoom;
-            ownCat.transform.position = newPos;
-            ownCat.SetActive(true);
-            ownCatController.WalkOutOfCarrier(bea.GetComponent<PlayerController>().lookDirection);
-            isCatInside = false;
+
+            if (isArriving) {
+                ownCatController.currentRoom = PlayerController.currentRoom;
+                ownCat.transform.position = newPos;
+                ownCat.SetActive(true);
+                ownCatController.WalkOutOfCarrier(bea.GetComponent<PlayerController>().lookDirection);
+                isCatInside = false;
+            } else if (isLeaving) {
+                ownCatController.WalkIntoCarrier(new Vector2(
+                    transform.position.x + bea.GetComponent<PlayerController>().lookDirection.x,
+                    transform.position.y + bea.GetComponent<PlayerController>().lookDirection.y
+                ));
+                isCatInside = true;
+            }
         } else if (!isCatInside && isArriving && carrierSpot != null) {
             bea.GetComponent<PlayerController>().Place();
             isPickedUp = false;
-            carrierRigidbody.MovePosition(carrierSpot.transform.position);
+            transform.position = carrierSpot.transform.position;
             carrierSpot.GetComponent<SpotController>().isOccupied = true;
             gameObject.layer = LayerMask.NameToLayer("Default");
             alertFrame.SetActive(false);
@@ -203,13 +219,40 @@ public class CarrierController : MonoBehaviour
             bea = null;
             promptManager.OpenNotebookPrompt();
             TimeManager.ExitEditMode();
+        } else if (isCatInside && isLeaving && leaveZone != null) {
+            bea.GetComponent<PlayerController>().Place();
+            isPickedUp = false;
+            Vector2 newPos = new Vector2(Mathf.Round(bea.GetComponent<Rigidbody2D>().position.x), Mathf.Round(bea.GetComponent<Rigidbody2D>().position.y));
+
+            if (bea.GetComponent<PlayerController>().lookDirection == new Vector2(0.0f, -1.0f)) {
+                newPos.y -= 1.0f;
+            } else if (bea.GetComponent<PlayerController>().lookDirection == new Vector2(-1.0f, 0.0f)) {
+                newPos.x -= 1.0f;
+            } else if (bea.GetComponent<PlayerController>().lookDirection == new Vector2(0.0f, 1.0f)) {
+                newPos.y += 1.0f;
+            } else if (bea.GetComponent<PlayerController>().lookDirection == new Vector2(1.0f, 0.0f)) {
+                newPos.x += 1.0f;
+            }
+
+            if (newPos.y < -10.52f) {
+                newPos.y = -10.52f;
+            }
+
+            transform.position = newPos;
+            gameObject.layer = LayerMask.NameToLayer("Default");
+            transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
+            canPickUp = false;
+
+            leaveTimer = 1.0f;
         }
-        // else if (
-        //     !isCatInside && !isArriving
-        //     && PlayerController.currentRoom == ownCat.GetComponent<CatController>().currentRoom
-        // ) {
-        //     trigger cat enter
-        // }
+    }
+
+    public void CatIsDone() {
+        isWaitingForCat = false;
+        if (bea != null) {
+            transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(true);
+            canPickUp = true;
+        }
     }
 
     public void GetCat(GameObject cat, GameObject alertFrameReference) {
@@ -217,23 +260,30 @@ public class CarrierController : MonoBehaviour
         alertFrame = alertFrameReference;
     }
 
+    public void Leave() {
+        CatController catController = ownCat.GetComponent<CatController>();
+        int moneyToAdd = (catController.purr/10) * catController.spoiledLevel * catController.stayLength;
+        MoneyManager.DepositMoney(moneyToAdd);
+        KittInnManager.AddCatStats(catController.purr);
+        guestManager.DespawnCat(true, ownCat);
+
+        alertFrame.SetActive(false);
+        bea = null;
+        promptManager.OpenNotebookPrompt();
+        TimeManager.ExitEditMode();
+    }
+
     void OnTriggerEnter2D(Collider2D collider)
     {
         if (
             collider.gameObject.tag == "Bea"
             && (isArriving || isLeaving)
-            && !isPickedUp
+            && !isPickedUp && !isWaitingForCat
         ) {
             bea = collider.gameObject;
             promptManager = collider.gameObject.GetComponent<PlayerController>().promptManagerReference.GetComponent<PromptManager>();
             transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(true);
             canPickUp = true;
-        } else if (
-            collider.gameObject.tag == "Carrier Spot"
-            && !isCatInside && isArriving && isPickedUp
-            && !collider.gameObject.GetComponent<SpotController>().isOccupied
-        ) {
-            carrierSpot = collider.gameObject;
         }
     }
 
@@ -244,11 +294,6 @@ public class CarrierController : MonoBehaviour
             bea = null;
             transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
             canPickUp = false;
-        } else if (
-            collider.gameObject.tag == "Carrier Spot"
-            && !isCatInside && isArriving && isPickedUp
-        ) {
-            carrierSpot = null;
         }
     }
 }

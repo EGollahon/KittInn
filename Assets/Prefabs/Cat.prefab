@@ -269,13 +269,14 @@ MonoBehaviour:
   arrivalTime: 0
   checkOutTime: 0
   stayLength: 0
-  contentSprite: {fileID: -57127465, guid: 9ba15e6ad091ec157b0ddbf16c047554, type: 3}
+  contentSprite: {fileID: -633130096, guid: 6fe4f151ac1425eb2a43fc7f8d9d9645, type: 3}
   hungrySprite: {fileID: -1745718415, guid: acbd24283a3d149fdb61e8e35ab0de23, type: 3}
   thirstySprite: {fileID: 1202892839, guid: f32f076ad3f691c729e13b7e72ea6a20, type: 3}
   disgustedSprite: {fileID: -790070198, guid: 70aa9ebc604cecae089870b165ba9a4e, type: 3}
   tiredSprite: {fileID: -1179986160, guid: 86529fee95371689eacf4e7805b97ac1, type: 3}
-  boredSprite: {fileID: -1291748460, guid: 65c969266fa84eef3a75889df54a2d07, type: 3}
-  lonelySprite: {fileID: -1015370848, guid: 9ba15e6ad091ec157b0ddbf16c047554, type: 3}
+  boredSprite: {fileID: -1049303033, guid: 65c969266fa84eef3a75889df54a2d07, type: 3}
+  lonelySprite: {fileID: -1397313410, guid: 6fe4f151ac1425eb2a43fc7f8d9d9645, type: 3}
+  isLeaving: 0
   newStatusTime: 7.25
   satisfyTimer: -1
   currentRoom: 0
@@ -1048,7 +1049,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1344107393690714600
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1125,7 +1126,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6880551599696359948
 RectTransform:
   m_ObjectHideFlags: 0

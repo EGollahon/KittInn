@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2189945755867283363}
   - component: {fileID: 3533089824894758814}
-  - component: {fileID: 5141346727052980385}
   - component: {fileID: 2228383686626727597}
-  - component: {fileID: 2609802314402881702}
   - component: {fileID: 7139497593750497076}
+  - component: {fileID: 9208337567409542183}
   m_Layer: 0
   m_Name: Carrier
   m_TagString: Untagged
@@ -89,27 +88,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!50 &5141346727052980385
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1279542092260677104}
-  m_BodyType: 0
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 1
-  m_UseAutoMass: 0
-  m_Mass: 10000
-  m_LinearDrag: 1000
-  m_AngularDrag: 0.05
-  m_GravityScale: 0
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
-  m_Constraints: 4
 --- !u!61 &2228383686626727597
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -136,7 +114,39 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.5, y: 0.5}
   m_EdgeRadius: 0
---- !u!61 &2609802314402881702
+--- !u!114 &7139497593750497076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1279542092260677104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b9448efdf257d382be79ece3e204419, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ownCat: {fileID: 0}
+  alertFrame: {fileID: 0}
+  color: 0
+  canPickUp: 0
+  isPickedUp: 0
+  isCatInside: 1
+  isArriving: 1
+  isLeaving: 0
+  isWaitingForCat: 0
+  bea: {fileID: 0}
+  carrierSpot: {fileID: 0}
+  blueForwardSprite: {fileID: 177571948, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  blueBackwardSprite: {fileID: 1545972772, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  blueSideSprite: {fileID: 1192429825, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  greenForwardSprite: {fileID: 1119103010, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  greenBackwardSprite: {fileID: 776299096, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  greenSideSprite: {fileID: -1450652940, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  redForwardSprite: {fileID: 49589590, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  redBackwardSprite: {fileID: -12864060, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+  redSideSprite: {fileID: -1039520208, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
+--- !u!61 &9208337567409542183
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -162,35 +172,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.5, y: 1.5}
   m_EdgeRadius: 0
---- !u!114 &7139497593750497076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1279542092260677104}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6b9448efdf257d382be79ece3e204419, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ownCat: {fileID: 0}
-  color: 0
-  canPickUp: 0
-  isPickedUp: 0
-  isCatInside: 1
-  isArriving: 1
-  isLeaving: 0
-  bea: {fileID: 0}
-  blueForwardSprite: {fileID: 177571948, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  blueBackwardSprite: {fileID: 1545972772, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  blueSideSprite: {fileID: 1192429825, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  greenForwardSprite: {fileID: 1119103010, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  greenBackwardSprite: {fileID: 776299096, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  greenSideSprite: {fileID: -1450652940, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  redForwardSprite: {fileID: 49589590, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  redBackwardSprite: {fileID: -12864060, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
-  redSideSprite: {fileID: -1039520208, guid: b0e9b6ef12077dec08509bd349b2c19f, type: 3}
 --- !u!1 &1742642684349067167
 GameObject:
   m_ObjectHideFlags: 0

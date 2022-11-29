@@ -13,10 +13,30 @@ public class KittInnManager : MonoBehaviour
     public static int purrNeededForLevel2 = 100;
     public static int purrNeededForLevel3 = 200;
 
+    public int lastPurr = 0;
     public GameObject innStatsReference;
 
     void Start()
     {
+        RecalculateStats();
+    }
+
+    void Update()
+    {
+        if (lastPurr != totalPurr) {
+            RecalculateStats();
+            lastPurr = totalPurr;
+        }
+    }
+
+    public static void AddCatStats(int purrToAdd) {
+        totalPurr += purrToAdd;
+        totalGuests += 1;
+    }
+
+    public void RecalculateStats() {
+        averagePurr = (float)totalPurr / (float)totalGuests;
+
         innStatsReference.transform.Find("Level").gameObject.GetComponent<TextMeshProUGUI>().text = level.ToString();
         innStatsReference.transform.Find("Purr Label").gameObject.GetComponent<TextMeshProUGUI>().text = "Total Purr: " + totalPurr.ToString();
         int denominator = purrNeededForLevel2;
@@ -27,10 +47,5 @@ public class KittInnManager : MonoBehaviour
         innStatsReference.transform.Find("Purr Mask").gameObject.GetComponent<Image>().rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newMaskHeight);
         innStatsReference.transform.Find("Average Purr/Text").gameObject.GetComponent<TextMeshProUGUI>().text = averagePurr.ToString() + "%";
         innStatsReference.transform.Find("Total Guests/Text").gameObject.GetComponent<TextMeshProUGUI>().text = totalGuests.ToString();
-    }
-
-    void Update()
-    {
-        
     }
 }

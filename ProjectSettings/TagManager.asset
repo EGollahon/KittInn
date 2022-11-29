@@ -10,6 +10,7 @@ TagManager:
   - Item
   - Carrier Spot
   - Cat
+  - Leave Zone
   layers:
   - Default
   - TransparentFX

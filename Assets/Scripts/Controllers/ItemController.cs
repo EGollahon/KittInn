@@ -133,10 +133,10 @@ public class ItemController : MonoBehaviour
             ActivateFoodSelect();
         } else if (type == InventoryType.WaterDish) {
             GetComponent<SpriteRenderer>().sprite = waterFullSprite;
-            availableUses = 3;
+            availableUses = 5;
         } else if (type == InventoryType.LitterBox) {
             GetComponent<SpriteRenderer>().sprite = litterCleanSprite;
-            availableUses = 3;
+            availableUses = 5;
         }
 
         refillCleanPrompt.SetActive(false);
@@ -209,7 +209,7 @@ public class ItemController : MonoBehaviour
         }
         food.quantity--;
         GetComponent<SpriteRenderer>().sprite = foodFullSprite;
-        availableUses = 1;
+        availableUses = 5;
         DeactivateFoodSelect();
         foodSelectPrompt.SetActive(false);
 

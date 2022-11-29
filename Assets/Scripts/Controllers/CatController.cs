@@ -27,6 +27,7 @@ public class CatController : MonoBehaviour
     public float arrivalTime;
     public float checkOutTime;
     public int stayLength;
+    public int daysLeft;
 
     public Sprite contentSprite;
     public Sprite hungrySprite;
@@ -35,6 +36,8 @@ public class CatController : MonoBehaviour
     public Sprite tiredSprite;
     public Sprite boredSprite;
     public Sprite lonelySprite;
+
+    public bool isLeaving = false;
 
     public float newStatusTime = 0.0f;
     public float satisfyTimer = -1.0f;
@@ -61,23 +64,17 @@ public class CatController : MonoBehaviour
     void Update()
     {
         if (status == Status.Content && autonomous) {
-            Debug.Log("if youre content");
             if (TimeManager.timeOfDay == TimeOfDay.Night && activity != Activity.Sleeping) {
-                Debug.Log("1");
                 GetNewStatus(true);
                 newStatusTime = 7.0f;
             } else if (TimeManager.timeOfDay == TimeOfDay.Night && newStatusTime != 7.0f) {
-                Debug.Log("2");
                 newStatusTime = 7.0f;
             } else if (TimeManager.time == newStatusTime) {
-                Debug.Log("3");
                 GetNewStatus(false);
             }
-            Debug.Log("end content");
         }
 
         if (activity == Activity.Moving) {
-            Debug.Log("moving");
             int xInput = (int)(closedList[stepInPath].location.x - closedList[stepInPath - 1].location.x);
             int yInput = (int)(closedList[stepInPath].location.y - closedList[stepInPath - 1].location.y);
 
@@ -93,7 +90,13 @@ public class CatController : MonoBehaviour
                 if (stepInPath < (closedList.Count - 1)) {
                     stepInPath++;
                 } else {
-                    if (status != Status.Lonely) {
+                    if (isLeaving && (targetLocation.x != carrier.transform.position.x ||targetLocation.y != carrier.transform.position.y)) {
+                        targetLocation = carrier.transform.position;
+                        GetPath();
+                    } else if (isLeaving) {
+                        carrier.GetComponent<CarrierController>().CatIsDone();
+                        gameObject.SetActive(false);
+                    } else if (status != Status.Lonely) {
                         ReachItem();
                     } else {
                         activity = Activity.WaitingForPets;
@@ -107,7 +110,6 @@ public class CatController : MonoBehaviour
         }
 
         if (satisfyTimer >= 0) {
-            Debug.Log("satisfy");
             satisfyTimer -= Time.deltaTime;
             if (satisfyTimer < 0) {
                 SatisfyCat();
@@ -115,11 +117,10 @@ public class CatController : MonoBehaviour
         }
 
         if (TimeManager.time != currentTime) {
-            Debug.Log("cat time change");
             currentTime = TimeManager.time;
 
             if (activity == Activity.WaitingForUnoccupied || activity == Activity.WaitingForUses || activity == Activity.WaitingForPets) {
-                SubtractPurr(2);
+                SubtractPurr(1);
             } else if (activity == Activity.Sleeping || activity == Activity.Playing || activity == Activity.BeingPetted) {
                 AddPurr(2);
             }
@@ -145,6 +146,7 @@ public class CatController : MonoBehaviour
     }
 
     void ReachItem() {
+        carrier.GetComponent<CarrierController>().CatIsDone();
         autonomous = true;
         bool isSatisfied = true;
 
@@ -267,7 +269,6 @@ public class CatController : MonoBehaviour
 
     void GetNewStatus(bool isSleep)
     {
-        Debug.Log("get new status " + TimeManager.time.ToString());
         bool isStatusValid = false;
 
         if (!isSleep) {
@@ -362,9 +363,6 @@ public class CatController : MonoBehaviour
                 transform.position = targetLocation;
             }
             targetLocation = RoomManager.RetrieveEmptySpace(currentRoom);
-            if (interactingWith != null) {
-                interactingWith.GetComponent<ItemController>().isOccupied = false;
-            }
             GetPath();
         }
     }
@@ -424,6 +422,19 @@ public class CatController : MonoBehaviour
         isCheckedIn = true;
     }
 
+    public void WalkIntoCarrier(Vector2 carrierEntryLocation) {
+        autonomous = false;
+        isLeaving = true;
+        if (interactingWith != null) {
+                interactingWith.GetComponent<ItemController>().isOccupied = false;
+            }
+        if (lastStatus == Status.Tired) {
+            transform.position = targetLocation;
+        }
+        targetLocation = carrierEntryLocation;
+        GetPath();
+    }
+
     public void IntializeCat(
         CatName newCatName,
         CoatColor newCoat,
@@ -440,6 +451,7 @@ public class CatController : MonoBehaviour
         spoiledLevel = newSpoiledLevel;
         favFood = newFavFood;
         stayLength = newStayLength;
+        daysLeft = newStayLength;
         carrier = newCarrier;
 
         transform.Find("Canvas/Cat Tooltip/Name").gameObject.GetComponent<TextMeshProUGUI>().text = newCatName.ToString();

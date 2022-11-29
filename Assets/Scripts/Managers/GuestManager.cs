@@ -53,7 +53,6 @@ public class GuestManager : MonoBehaviour
         }
 
         if (TimeManager.time != currentTime) {
-            Debug.Log("guest manager change time");
             currentTime = TimeManager.time;
 
             for (int i = 0; i < currentGuests.Count; i++) {
@@ -68,17 +67,21 @@ public class GuestManager : MonoBehaviour
                     alertFrameReference.SetActive(true);
                 } else if (
                     currentGuests[i].GetComponent<CatController>().checkOutTime == currentTime
-                    && currentGuests[i].GetComponent<CatController>().stayLength == 0
+                    && currentGuests[i].GetComponent<CatController>().daysLeft == 0
                 ) {
-
+                    TimeManager.EnterEditMode();
+                    currentGuests[i].GetComponent<CatController>().carrier.GetComponent<CarrierController>().isLeaving = true;
+                    currentGuests[i].GetComponent<CatController>().carrier.GetComponent<CarrierController>().PassGuestManager(gameObject.GetComponent<GuestManager>());
+                    alertFrameReference.transform.Find("Text").gameObject.GetComponent<TextMeshProUGUI>().text =
+                        currentGuests[i].GetComponent<CatController>().catName.ToString() + " is ready to leave!";
+                    alertFrameReference.SetActive(true);
                 } else if (currentTime == 0.0f) {
-                    currentGuests[i].GetComponent<CatController>().stayLength--;
+                    currentGuests[i].GetComponent<CatController>().daysLeft--;
                     currentGuests[i].GetComponent<CatController>().dailyFeedings = 2;
                 }
             }
 
             if (currentTime == 7.0f) {
-                Debug.Log("roll over day");
                 for (int i = 0; i < requestedGuests.Count; i++) {
                     DespawnCat(false, requestedGuests[i]);
                 }
@@ -177,12 +180,12 @@ public class GuestManager : MonoBehaviour
                 guestsDetailReference.transform.Find("Stay").gameObject.GetComponent<TextMeshProUGUI>().text = "Arrives Today";
             } else if (!cat.isCheckedIn && cat.arrivalTime < TimeManager.time) {
                 guestsDetailReference.transform.Find("Stay").gameObject.GetComponent<TextMeshProUGUI>().text = "Arrives Tomorrow";
-            } else if (cat.stayLength == 0) {
+            } else if (cat.daysLeft == 0) {
                 guestsDetailReference.transform.Find("Stay").gameObject.GetComponent<TextMeshProUGUI>().text = "Leaves Today";
-            } else if (cat.stayLength == 1) {
+            } else if (cat.daysLeft == 1) {
                 guestsDetailReference.transform.Find("Stay").gameObject.GetComponent<TextMeshProUGUI>().text = "Leaves Tomorrow";
             } else {
-                guestsDetailReference.transform.Find("Stay").gameObject.GetComponent<TextMeshProUGUI>().text = "Leaves in " + cat.stayLength.ToString() + " Days";
+                guestsDetailReference.transform.Find("Stay").gameObject.GetComponent<TextMeshProUGUI>().text = "Leaves in " + cat.daysLeft.ToString() + " Days";
             }
         }
 
@@ -279,7 +282,7 @@ public class GuestManager : MonoBehaviour
         RefreshGuestsDetail();
     }
 
-    void DespawnCat(bool isCurrent, GameObject cat) {
+    public void DespawnCat(bool isCurrent, GameObject cat) {
         if (isCurrent) {
             currentGuests.Remove(cat);
         } else {
@@ -299,7 +302,7 @@ public class GuestManager : MonoBehaviour
         } while (currentGuests.Exists(
             e => (!e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().arrivalTime == newArrivalTime)
                 || (e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().checkOutTime == newArrivalTime
-                    && (e.GetComponent<CatController>().stayLength == 0 || e.GetComponent<CatController>().stayLength == 1)
+                    && (e.GetComponent<CatController>().daysLeft == 0 || e.GetComponent<CatController>().daysLeft == 1)
                 )
         ));
 
@@ -308,7 +311,7 @@ public class GuestManager : MonoBehaviour
             newCheckOutTime = GetRandomTime(false);
         } while (currentGuests.Exists(
             e => e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().checkOutTime == newArrivalTime
-                && (e.GetComponent<CatController>().stayLength == selectedCat.stayLength || e.GetComponent<CatController>().stayLength == selectedCat.stayLength + 1)
+                && (e.GetComponent<CatController>().daysLeft == selectedCat.daysLeft || e.GetComponent<CatController>().daysLeft == selectedCat.daysLeft + 1)
         ));
 
         selectedCat.arrivalTime = newArrivalTime;

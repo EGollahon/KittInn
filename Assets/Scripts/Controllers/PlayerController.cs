@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     public bool isSleeping = false;
 
     public GameObject catInRange;
+    public GameObject carrierCarrying;
 
     public GameObject promptManagerReference;
     PromptManager promptManager;
@@ -118,6 +119,13 @@ public class PlayerController : MonoBehaviour
                 catInRange.GetComponent<CatController>().StartPettingCat();
                 promptManager.StopPetting();
             }
+        } else if (
+            Input.GetKeyDown("x")
+            && carrierCarrying != null
+            && isCarrying
+            && PromptManager.currentActionSet == AvailableActionSet.PlacePrompt
+        ) {
+            carrierCarrying.GetComponent<CarrierController>().Place();
         }
     }
 
@@ -132,12 +140,14 @@ public class PlayerController : MonoBehaviour
         playerRigidbody.MovePosition(newPos);
     }
     
-    public void PickUp() {
+    public void PickUp(GameObject newCarrier) {
         isCarrying = true;
+        carrierCarrying = newCarrier;
     }
 
     public void Place() {
         isCarrying = false;
+        carrierCarrying = null;
     }
 
     void OnTriggerEnter2D(Collider2D collider)
@@ -150,12 +160,28 @@ public class PlayerController : MonoBehaviour
                 || (collider.gameObject.GetComponent<CatController>().status == Status.Content && catInRange.GetComponent<CatController>().status == Status.Content)
             ) {
                 catInRange = collider.gameObject;
-                // get cat tooltip and set active - transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(true);
             }
 
             if (collider.gameObject.GetComponent<CatController>().activity == Activity.WaitingForPets) {
                 promptManager.CatRoomsPromptsWithCats();
             }
+        } else if (
+            collider.gameObject.tag == "Carrier Spot"
+            && carrierCarrying != null
+            && !carrierCarrying.GetComponent<CarrierController>().isCatInside
+            && carrierCarrying.GetComponent<CarrierController>().isArriving
+            && carrierCarrying.GetComponent<CarrierController>().isPickedUp
+            && !collider.gameObject.GetComponent<SpotController>().isOccupied
+        ) {
+            carrierCarrying.GetComponent<CarrierController>().carrierSpot = collider.gameObject;
+        } else if (
+            collider.gameObject.tag == "Leave Zone"
+            && carrierCarrying != null
+            && carrierCarrying.GetComponent<CarrierController>().isCatInside
+            && carrierCarrying.GetComponent<CarrierController>().isLeaving
+            && carrierCarrying.GetComponent<CarrierController>().isPickedUp
+        ) {
+            carrierCarrying.GetComponent<CarrierController>().leaveZone = collider.gameObject;
         }
     }
 
@@ -163,9 +189,24 @@ public class PlayerController : MonoBehaviour
     {
         if (collider.gameObject.tag == "Cat")
         {
-            // hide cat tooltip
             promptManager.CatRoomsPrompts();
             catInRange = null;
+        } else if (
+            collider.gameObject.tag == "Carrier Spot"
+            && carrierCarrying != null
+            && !carrierCarrying.GetComponent<CarrierController>().isCatInside
+            && carrierCarrying.GetComponent<CarrierController>().isArriving
+            && carrierCarrying.GetComponent<CarrierController>().isPickedUp
+        ) {
+            carrierCarrying.GetComponent<CarrierController>().carrierSpot = null;
+        } else if (
+            collider.gameObject.tag == "Leave Zone"
+            && carrierCarrying != null
+            && carrierCarrying.GetComponent<CarrierController>().isCatInside
+            && carrierCarrying.GetComponent<CarrierController>().isLeaving
+            && carrierCarrying.GetComponent<CarrierController>().isPickedUp
+        ) {
+            carrierCarrying.GetComponent<CarrierController>().leaveZone = null;
         }
     }
 }
