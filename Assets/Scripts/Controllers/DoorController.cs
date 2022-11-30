@@ -8,6 +8,8 @@ public class DoorController : MonoBehaviour
     public Sprite openSprite;
     public Sprite closedSprite;
 
+    public bool isUnlocked = true;
+
     void Start()
     {
         doorRenderer = GetComponent<SpriteRenderer>();
@@ -15,7 +17,7 @@ public class DoorController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == "Bea")
+        if (collider.gameObject.tag == "Bea" && isUnlocked)
         {
             doorRenderer.sprite = openSprite;
         }
@@ -23,7 +25,7 @@ public class DoorController : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == "Bea")
+        if (collider.gameObject.tag == "Bea" && isUnlocked)
         {
             doorRenderer.sprite = closedSprite;
         }

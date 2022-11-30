@@ -6,8 +6,7 @@ using UnityEngine;
 public class HandbookEntryClass
 {
     public string title;
-    public string description;
-    public bool isUnlocked;
+    public string content;
 }
 
 [System.Serializable]
@@ -46,4 +45,18 @@ public class FoodClass
 {
     public Food foodName;
     public Sprite displaySprite;
+}
+
+[System.Serializable]
+public class DialogSetClass
+{
+    public string name;
+    public List<DialogClass> dialogList;
+}
+
+[System.Serializable]
+public class DialogClass
+{
+    public string speaker;
+    public string dialog;
 }
