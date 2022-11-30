@@ -264,7 +264,7 @@ public class GuestManager : MonoBehaviour
 
         GameObject newCarrier = Instantiate(carrierPrefab, new Vector2(0.5f, -10.52f), Quaternion.identity);
         GameObject newCat = Instantiate(catPrefab, new Vector2(0.5f, -10.52f), Quaternion.identity);
-        newCat.GetComponent<CatController>().IntializeCat(
+        newCat.GetComponent<CatController>().InitializeCat(
             newCatName,
             newCoat,
             newPersonality,

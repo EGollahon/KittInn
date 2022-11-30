@@ -262,7 +262,7 @@ public class CarrierController : MonoBehaviour
 
     public void Leave() {
         CatController catController = ownCat.GetComponent<CatController>();
-        int moneyToAdd = (catController.purr/10) * catController.spoiledLevel * catController.stayLength;
+        int moneyToAdd = (Mathf.RoundToInt((float)catController.purr/10) * catController.spoiledLevel * catController.stayLength) + (10 * catController.spoiledLevel);
         MoneyManager.DepositMoney(moneyToAdd);
         KittInnManager.AddCatStats(catController.purr);
         guestManager.DespawnCat(true, ownCat);

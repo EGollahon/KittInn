@@ -122,7 +122,11 @@ public class CatController : MonoBehaviour
             if (activity == Activity.WaitingForUnoccupied || activity == Activity.WaitingForUses || activity == Activity.WaitingForPets) {
                 SubtractPurr(1);
             } else if (activity == Activity.Sleeping || activity == Activity.Playing || activity == Activity.BeingPetted) {
-                AddPurr(2);
+                if (interactingWith != null && interactingWith.GetComponent<ItemController>().level >= spoiledLevel) {
+                    AddPurr(2);
+                } else {
+                    AddPurr(1);
+                }
             }
         }
     }
@@ -390,10 +394,14 @@ public class CatController : MonoBehaviour
             if (activity == Activity.Eating) {
                 dailyFeedings--;
                 if (interactingWith != null) {
-                    if (interactingWith.GetComponent<ItemController>().filledFood == favFood) {
-                        AddPurr(10);
+                    if (interactingWith != null && interactingWith.GetComponent<ItemController>().level >= spoiledLevel) {
+                        if (interactingWith.GetComponent<ItemController>().filledFood == favFood) {
+                            AddPurr(10);
+                        } else {
+                            AddPurr(5);
+                        }
                     } else {
-                        AddPurr(5);
+                        AddPurr(2);
                     }
                 }
             } else if (activity == Activity.Drinking || activity == Activity.UsingLitterBox) {
@@ -435,7 +443,7 @@ public class CatController : MonoBehaviour
         GetPath();
     }
 
-    public void IntializeCat(
+    public void InitializeCat(
         CatName newCatName,
         CoatColor newCoat,
         Personality newPersonality,
@@ -453,6 +461,71 @@ public class CatController : MonoBehaviour
         stayLength = newStayLength;
         daysLeft = newStayLength;
         carrier = newCarrier;
+
+        switch (coat) {
+            case CoatColor.Black:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)132 / 255.0f, (float)120 / 255.0f, (float)117 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)87 / 255.0f, (float)72 / 255.0f, (float)82 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)75 / 255.0f, (float)61 / 255.0f, (float)68 / 255.0f);
+                break;
+            case CoatColor.Gray:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)171 / 255.0f, (float)155 / 255.0f, (float)142 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)132 / 255.0f, (float)120 / 255.0f, (float)117 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)87 / 255.0f, (float)72 / 255.0f, (float)82 / 255.0f);
+                break;
+            case CoatColor.Red:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)199 / 255.0f, (float)123 / 255.0f, (float)88 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)174 / 255.0f, (float)93 / 255.0f, (float)64 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)121 / 255.0f, (float)68 / 255.0f, (float)74 / 255.0f);
+                break;
+            case CoatColor.Tan:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)209 / 255.0f, (float)177 / 255.0f, (float)135 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)186 / 255.0f, (float)145 / 255.0f, (float)88 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)146 / 255.0f, (float)116 / 255.0f, (float)65 / 255.0f);
+                break;
+            case CoatColor.Gold:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)186 / 255.0f, (float)145 / 255.0f, (float)88 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)146 / 255.0f, (float)116 / 255.0f, (float)65 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)77 / 255.0f, (float)69 / 255.0f, (float)57 / 255.0f);
+                break;
+            case CoatColor.Blue:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)210 / 255.0f, (float)201 / 255.0f, (float)165 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)140 / 255.0f, (float)171 / 255.0f, (float)161 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)75 / 255.0f, (float)114 / 255.0f, (float)110 / 255.0f);
+                break;
+            case CoatColor.Orange:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)209 / 255.0f, (float)177 / 255.0f, (float)135 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)199 / 255.0f, (float)123 / 255.0f, (float)88 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)174 / 255.0f, (float)93 / 255.0f, (float)64 / 255.0f);
+                break;
+            case CoatColor.Teal:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)140 / 255.0f, (float)171 / 255.0f, (float)161 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)75 / 255.0f, (float)114 / 255.0f, (float)110 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)87 / 255.0f, (float)72 / 255.0f, (float)82 / 255.0f);
+                break;
+            case CoatColor.Cream:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)210 / 255.0f, (float)210 / 255.0f, (float)165 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)209 / 255.0f, (float)177 / 255.0f, (float)135 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)186 / 255.0f, (float)145 / 255.0f, (float)88 / 255.0f);
+                break;
+            case CoatColor.Burgundy:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)174 / 255.0f, (float)93 / 255.0f, (float)64 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)121 / 255.0f, (float)68 / 255.0f, (float)74 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)75 / 255.0f, (float)61 / 255.0f, (float)68 / 255.0f);
+                break;
+            case CoatColor.Lime:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)210 / 255.0f, (float)201 / 255.0f, (float)165 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)179 / 255.0f, (float)165 / 255.0f, (float)85 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)119 / 255.0f, (float)116 / 255.0f, (float)59 / 255.0f);
+                break;
+            case CoatColor.Green:
+                transform.Find("LightLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)179 / 255.0f, (float)165 / 255.0f, (float)85 / 255.0f);
+                transform.Find("MediumLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)119 / 255.0f, (float)116 / 255.0f, (float)59 / 255.0f);
+                transform.Find("DarkLayer").gameObject.GetComponent<SpriteRenderer>().color = new Color((float)77 / 255.0f, (float)69 / 255.0f, (float)57 / 255.0f);
+                break;
+            default:
+                break;
+        }
 
         transform.Find("Canvas/Cat Tooltip/Name").gameObject.GetComponent<TextMeshProUGUI>().text = newCatName.ToString();
         transform.Find("Canvas/Status Thought/Image").gameObject.GetComponent<Image>().sprite = GetStatusSprite();

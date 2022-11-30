@@ -40,19 +40,19 @@ public class PlayerController : MonoBehaviour
             if (movement.x > 0.5f || movement.y > 0.5f || movement.x < -0.5f || movement.y < -0.5f) {
                 playerAnimator.SetBool("IsWalking", true);
 
-                if (movement.x > 0.5f) {
+                if (movement.x > 0.5f && lookDirection.y == 0.0f) {
                     lookDirection.x = 1.0f;
                     lookDirection.y = 1.0f;
-                } else if (movement.x < -0.5f) {
+                } else if (movement.x < -0.5f && lookDirection.y == 0.0f) {
                     lookDirection.x = -1.0f;
                     lookDirection.y = 1.0f;
                 } else {
                     lookDirection.x = 0.0f;
                 }
                 
-                if (movement.y > 0.5f) {
+                if (movement.y > 0.5f && lookDirection.x == 0.0f) {
                     lookDirection.y = 1.0f;
-                } else if (movement.y < -0.5f) {
+                } else if (movement.y < -0.5f && lookDirection.x == 0.0f) {
                     lookDirection.y = -1.0f;
                 } else {
                     lookDirection.y = 0.0f;
@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour
         } else if (isPetting) {
             if (catInRange.GetComponent<CatController>().activity != Activity.WaitingForPets && catInRange.GetComponent<CatController>().activity != Activity.BeingPetted) {
                 isPetting = false;
+                playerAnimator.SetBool("IsPetting", false);
                 promptManager.CatRoomsPrompts();
             }
         }
@@ -110,12 +111,14 @@ public class PlayerController : MonoBehaviour
                 && catInRange.GetComponent<CatController>().activity == Activity.BeingPetted
             ) {
                 isPetting = false;
+                playerAnimator.SetBool("IsPetting", false);
                 catInRange.GetComponent<CatController>().StopPettingCat();
             } else if (
                 PromptManager.currentActionSet == AvailableActionSet.CatRoomsPromptsWithCats
                 && catInRange.GetComponent<CatController>().activity == Activity.WaitingForPets
             ) {
                 isPetting = true;
+                playerAnimator.SetBool("IsPetting", true);
                 catInRange.GetComponent<CatController>().StartPettingCat();
                 promptManager.StopPetting();
             }
@@ -142,11 +145,13 @@ public class PlayerController : MonoBehaviour
     
     public void PickUp(GameObject newCarrier) {
         isCarrying = true;
+        playerAnimator.SetBool("IsCarrying", true);
         carrierCarrying = newCarrier;
     }
 
     public void Place() {
         isCarrying = false;
+        playerAnimator.SetBool("IsCarrying", false);
         carrierCarrying = null;
     }
 

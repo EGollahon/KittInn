@@ -10,8 +10,8 @@ public class KittInnManager : MonoBehaviour
     public static float averagePurr = 0;
     public static int totalGuests = 0;
     public static int level = 1;
-    public static int purrNeededForLevel2 = 100;
-    public static int purrNeededForLevel3 = 200;
+    public static int purrNeededForLevel2 = 1000;
+    public static int purrNeededForLevel3 = 2000;
 
     public int lastPurr = 0;
     public GameObject innStatsReference;
@@ -45,7 +45,7 @@ public class KittInnManager : MonoBehaviour
         }
         float newMaskHeight = (400.0f * ((float)totalPurr / denominator)) + 1.0f;
         innStatsReference.transform.Find("Purr Mask").gameObject.GetComponent<Image>().rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, newMaskHeight);
-        innStatsReference.transform.Find("Average Purr/Text").gameObject.GetComponent<TextMeshProUGUI>().text = averagePurr.ToString() + "%";
+        innStatsReference.transform.Find("Average Purr/Text").gameObject.GetComponent<TextMeshProUGUI>().text = averagePurr.ToString("0.0") + "%";
         innStatsReference.transform.Find("Total Guests/Text").gameObject.GetComponent<TextMeshProUGUI>().text = totalGuests.ToString();
     }
 }

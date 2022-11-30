@@ -17581,6 +17581,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66c18affd13b3998081369239abe205c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lastPurr: 0
   innStatsReference: {fileID: 143362858}
 --- !u!1 &1245995968
 GameObject:
