@@ -16,8 +16,13 @@ public class KittInnManager : MonoBehaviour
     public int lastPurr = 0;
     public GameObject innStatsReference;
 
-    void Start()
+    public GameObject startScreen;
+
+    void Awake()
     {
+        TimeManager.PauseTime();
+        startScreen.SetActive(true);
+        startScreen.transform.Find("Start Button").gameObject.GetComponent<Button>().onClick.AddListener(StartGame);
         RecalculateStats();
     }
 
@@ -27,6 +32,12 @@ public class KittInnManager : MonoBehaviour
             RecalculateStats();
             lastPurr = totalPurr;
         }
+    }
+
+    void StartGame() {
+        startScreen.transform.Find("Start Button").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
+        startScreen.SetActive(false);
+        TimeManager.UnpauseTime();
     }
 
     public static void AddCatStats(int purrToAdd) {
