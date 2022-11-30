@@ -130,8 +130,8 @@ public class CarrierController : MonoBehaviour
 
     public void PickUp() {
         isPickedUp = true;
-        transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
         canPickUp = false;
+        transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
         bea.GetComponent<PlayerController>().PickUp(gameObject);
         gameObject.layer = LayerMask.NameToLayer("Being Carried");
     }

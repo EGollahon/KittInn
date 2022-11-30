@@ -26,7 +26,7 @@ public class PlayerController : MonoBehaviour
         promptManager = promptManagerReference.GetComponent<PromptManager>();
         playerRigidbody = GetComponent<Rigidbody2D>();
         playerAnimator = GetComponent<Animator>();
-        playerAnimator.SetFloat("LookX", 1.0f);
+        playerAnimator.SetFloat("LookX", 0.0f);
         playerAnimator.SetFloat("LookY", -1.0f);
     }
 
@@ -102,7 +102,6 @@ public class PlayerController : MonoBehaviour
             || PromptManager.currentActionSet == AvailableActionSet.CatRoomsPromptsWithCats)
         ) {
             promptManager.EditCancelPrompt();
-            TimeManager.EnterEditMode();
             mouseHighlight.SetActive(true);
             mouseHighlight.GetComponent<MouseHighlightController>().SetHighlightProps();
         } else if (Input.GetKeyDown("e") && catInRange != null) {

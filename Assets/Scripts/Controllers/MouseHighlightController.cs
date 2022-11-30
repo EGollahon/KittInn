@@ -9,6 +9,7 @@ public class MouseHighlightController : MonoBehaviour
     public bool isOverlapping = false;
     public bool isDeactivating = false;
     public bool canPlace = true;
+    public bool wasAlreadyInEditMode = false;
     public InventoryItemClass itemToPlace;
     public GameObject itemToMove;
     public GameObject hoveredItem;
@@ -62,7 +63,9 @@ public class MouseHighlightController : MonoBehaviour
 
             isDeactivating = true;
             promptManager.OpenNotebookPrompt();
-            TimeManager.ExitEditMode();
+            if (!wasAlreadyInEditMode) {
+                TimeManager.ExitEditMode();
+            }
             gameObject.SetActive(false);
         } else if (Input.GetKeyDown("x") && PromptManager.currentActionSet == AvailableActionSet.EditPickUpPrompts)
         {
@@ -169,7 +172,9 @@ public class MouseHighlightController : MonoBehaviour
 
                     isDeactivating = true;
                     promptManager.OpenNotebookPrompt();
-                    TimeManager.ExitEditMode();
+                    if (!wasAlreadyInEditMode) {
+                        TimeManager.ExitEditMode();
+                    }
                     gameObject.SetActive(false);
                 }
             }
@@ -177,7 +182,7 @@ public class MouseHighlightController : MonoBehaviour
                 promptManager.EditCancelPrompt();
             }
         }
-        else if (!hasItem && isOverlapping && !isDeactivating) {
+        else if (!hasItem && isOverlapping && !isDeactivating && !hoveredItem.GetComponent<ItemController>().isOccupied) {
             promptManager.EditPickUpPrompts();
         }
         else if (!isDeactivating) {
@@ -244,7 +249,9 @@ public class MouseHighlightController : MonoBehaviour
 
         isDeactivating = true;
         promptManager.OpenNotebookPrompt();
-        TimeManager.ExitEditMode();
+        if (!wasAlreadyInEditMode) {
+            TimeManager.ExitEditMode();
+        }
         gameObject.SetActive(false);
     }
 
@@ -252,6 +259,11 @@ public class MouseHighlightController : MonoBehaviour
     {
         StuffThatShouldWork();
 
+        if (TimeManager.isEditMode) {
+            wasAlreadyInEditMode = true;
+        } else {
+            wasAlreadyInEditMode = false;
+        }
         itemToPlace = item;
         itemToMove = null;
         transform.Find("Item").GetComponent<SpriteRenderer>().sprite = item.sprite;
@@ -264,18 +276,27 @@ public class MouseHighlightController : MonoBehaviour
             isLarge = false;
             highlightAnimator.SetBool("IsLargeHighlight", false);
         }
+
+        TimeManager.EnterEditMode();
     }
 
     public void SetHighlightProps()
     {
         StuffThatShouldWork();
 
+        if (TimeManager.isEditMode) {
+            wasAlreadyInEditMode = true;
+        } else {
+            wasAlreadyInEditMode = false;
+        }
         itemToPlace = null;
         itemToMove = null;
         transform.Find("Item").GetComponent<SpriteRenderer>().sprite = null;
         hasItem = false;
         isLarge = false;
         highlightAnimator.SetBool("IsLargeHighlight", false);
+
+        TimeManager.EnterEditMode();
     }
 
     Vector2 MoveHighlight(Vector2 position) {
@@ -321,7 +342,9 @@ public class MouseHighlightController : MonoBehaviour
             } else {
                 isDeactivating = true;
                 promptManager.OpenNotebookPrompt();
-                TimeManager.ExitEditMode();
+                if (!wasAlreadyInEditMode) {
+                    TimeManager.ExitEditMode();
+                }
                 gameObject.SetActive(false);
             }
         } else {
@@ -358,7 +381,9 @@ public class MouseHighlightController : MonoBehaviour
             } else {
                 isDeactivating = true;
                 promptManager.OpenNotebookPrompt();
-                TimeManager.ExitEditMode();
+                if (!wasAlreadyInEditMode) {
+                    TimeManager.ExitEditMode();
+                }
                 gameObject.SetActive(false);
             }
         }

@@ -37,7 +37,6 @@ public class InventoryManager : MonoBehaviour
         {
             NotebookManager.CloseNotebook();
             promptManager.EditPlacePrompts();
-            TimeManager.EnterEditMode();
             mouseHighlight.SetActive(true);
             mouseHighlight.GetComponent<MouseHighlightController>().SetHighlightProps(selectedItem);
         }

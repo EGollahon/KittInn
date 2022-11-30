@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class CatController : MonoBehaviour
 {
+    Animator catAnimator;
     float currentTime;
     public static float walkSpeed = 2.0f;
     public CatName catName;
@@ -38,11 +39,12 @@ public class CatController : MonoBehaviour
     public Sprite lonelySprite;
 
     public bool isLeaving = false;
-
+    
     public float newStatusTime = 0.0f;
     public float satisfyTimer = -1.0f;
 
     public Room currentRoom;
+    public Vector2 lookDirection = new Vector2(0.0f, -1.0f);
     List<Tile> openList = new List<Tile>();
     List<Tile> closedList = new List<Tile>();
     public Vector2 targetLocation = new Vector2(0.0f, 0.0f);
@@ -56,9 +58,12 @@ public class CatController : MonoBehaviour
         public int fScore;
     }
 
-    void Start()
+    void Awake()
     {
-
+        catAnimator = GetComponent<Animator>();
+        catAnimator.SetFloat("Look X", 0.0f);
+        catAnimator.SetFloat("Look Y", -1.0f);
+        catAnimator.SetBool("IsIdle", true);
     }
 
     void Update()
@@ -77,6 +82,27 @@ public class CatController : MonoBehaviour
         if (activity == Activity.Moving) {
             int xInput = (int)(closedList[stepInPath].location.x - closedList[stepInPath - 1].location.x);
             int yInput = (int)(closedList[stepInPath].location.y - closedList[stepInPath - 1].location.y);
+
+            if (xInput > 0.5f && lookDirection.y == 0.0f) {
+                    lookDirection.x = 1.0f;
+                    lookDirection.y = 1.0f;
+                } else if (xInput < -0.5f && lookDirection.y == 0.0f) {
+                    lookDirection.x = -1.0f;
+                    lookDirection.y = 1.0f;
+                } else {
+                    lookDirection.x = 0.0f;
+                }
+                
+                if (yInput > 0.5f && lookDirection.x == 0.0f) {
+                    lookDirection.y = 1.0f;
+                } else if (yInput < -0.5f && lookDirection.x == 0.0f) {
+                    lookDirection.y = -1.0f;
+                } else {
+                    lookDirection.y = 0.0f;
+                }
+
+                catAnimator.SetFloat("Look X", lookDirection.x);
+                catAnimator.SetFloat("Look Y", lookDirection.y);
 
             float newXPosition = transform.position.x + (walkSpeed * xInput * Time.deltaTime);
             float newYPosition = transform.position.y + (walkSpeed * yInput * Time.deltaTime);
@@ -100,6 +126,7 @@ public class CatController : MonoBehaviour
                         ReachItem();
                     } else {
                         activity = Activity.WaitingForPets;
+                        catAnimator.SetBool("IsSitting", true);
                     }
                 }
             }
@@ -163,34 +190,60 @@ public class CatController : MonoBehaviour
             switch (status) {
                 case Status.Hungry:
                     activity = Activity.Eating;
+                    catAnimator.SetBool("IsCrouching", true);
+                    if (interactingWith != null) {
+                        lookDirection.x = interactingWith.GetComponent<ItemController>().locations[0].x - transform.position.x;
+                        lookDirection.y = interactingWith.GetComponent<ItemController>().locations[0].y - transform.position.y;
+                        catAnimator.SetFloat("Look X", lookDirection.x);
+                        catAnimator.SetFloat("Look Y", lookDirection.y);
+                    }
                     break;
                 case Status.Thirsty:
                     activity = Activity.Drinking;
+                    catAnimator.SetBool("IsCrouching", true);
+                    if (interactingWith != null) {
+                        lookDirection.x = interactingWith.GetComponent<ItemController>().locations[0].x - transform.position.x;
+                        lookDirection.y = interactingWith.GetComponent<ItemController>().locations[0].y - transform.position.y;
+                        catAnimator.SetFloat("Look X", lookDirection.x);
+                        catAnimator.SetFloat("Look Y", lookDirection.y);
+                    }
                     break;
                 case Status.Disgusted:
                     activity = Activity.UsingLitterBox;
+                    catAnimator.SetBool("IsSitting", true);
                     if (interactingWith != null) {
                         transform.position = interactingWith.transform.position;
                     }
                     break;
                 case Status.Tired:
                     activity = Activity.Sleeping;
+                    catAnimator.SetBool("IsSleeping", true);
                     if (interactingWith != null) {
                         transform.position = interactingWith.transform.position;
                     }
                     break;
                 case Status.Bored:
                     activity = Activity.Playing;
+                    catAnimator.SetBool("IsPlaying", true);
+                    if (interactingWith != null) {
+                        lookDirection.x = interactingWith.GetComponent<ItemController>().locations[0].x - transform.position.x;
+                        lookDirection.y = interactingWith.GetComponent<ItemController>().locations[0].y - transform.position.y;
+                        catAnimator.SetFloat("Look X", lookDirection.x);
+                        catAnimator.SetFloat("Look Y", lookDirection.y);
+                    }
                     break;
                 case Status.Lonely:
                     activity = Activity.BeingPetted;
+                    catAnimator.SetBool("IsIdle", true);
                     break;
                 default:
                     activity = Activity.Waiting;
+                    catAnimator.SetBool("IsIdle", true);
                     break;
             }
         } else {
             activity = Activity.WaitingForUses;
+            catAnimator.SetBool("IsSitting", true);
         }
     }
 
@@ -207,6 +260,11 @@ public class CatController : MonoBehaviour
             AddNewTiles();
 
             activity = Activity.Moving;
+            catAnimator.SetBool("IsCrouching", false);
+            catAnimator.SetBool("IsIdle", false);
+            catAnimator.SetBool("IsPlaying", false);
+            catAnimator.SetBool("IsSitting", false);
+            catAnimator.SetBool("IsSleeping", false);
         } else {
             ReachItem();
         }
@@ -358,6 +416,7 @@ public class CatController : MonoBehaviour
                 GetPath();
             } else {
                 activity = Activity.WaitingForUnoccupied;
+                catAnimator.SetBool("IsSitting", true);
             }
         } else {
             if (interactingWith != null) {
@@ -427,6 +486,11 @@ public class CatController : MonoBehaviour
         closedList.Add(currentTile);
         closedList.Add(CreateNewTile(targetLocation, currentTile, false));
         activity = Activity.Moving;
+        catAnimator.SetBool("IsCrouching", false);
+        catAnimator.SetBool("IsIdle", false);
+        catAnimator.SetBool("IsPlaying", false);
+        catAnimator.SetBool("IsSitting", false);
+        catAnimator.SetBool("IsSleeping", false);
         isCheckedIn = true;
     }
 
@@ -568,6 +632,21 @@ public class CatController : MonoBehaviour
             RefreshTooltip();
             transform.Find("Canvas/Cat Tooltip").gameObject.SetActive(true);
             transform.Find("Canvas/Status Thought").gameObject.SetActive(false);
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Bea")
+        {
+            if (activity == Activity.BeingPetted) {
+                transform.Find("Canvas/Cat Tooltip").gameObject.SetActive(false);
+                transform.Find("Canvas/Status Thought").gameObject.SetActive(true);
+            } else {
+                RefreshTooltip();
+                transform.Find("Canvas/Cat Tooltip").gameObject.SetActive(true);
+                transform.Find("Canvas/Status Thought").gameObject.SetActive(false);
+            }
         }
     }
 
