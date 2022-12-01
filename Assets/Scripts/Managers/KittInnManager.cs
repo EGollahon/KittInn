@@ -15,29 +15,32 @@ public class KittInnManager : MonoBehaviour
 
     public int lastPurr = 0;
     public GameObject innStatsReference;
-
     public GameObject startScreen;
+    public GameObject fade;
+
+    public GameObject catRoomsDoor;
+    public GameObject sunroomDoor;
+    public GameObject sunroomBlock;
 
     void Awake()
     {
-        TimeManager.PauseTime();
-        startScreen.SetActive(true);
-        startScreen.transform.Find("Start Button").gameObject.GetComponent<Button>().onClick.AddListener(StartGame);
         RecalculateStats();
     }
 
     void Update()
     {
         if (lastPurr != totalPurr) {
+            if (level == 1 && totalPurr >= purrNeededForLevel2) {
+                level = 2;
+                sunroomBlock.SetActive(false);
+                catRoomsDoor.GetComponent<DoorController>().isUnlocked = true;
+                sunroomDoor.GetComponent<DoorController>().isUnlocked = true;
+            } else if (level == 2 && totalPurr >= purrNeededForLevel3) {
+                level = 3;
+            }
             RecalculateStats();
             lastPurr = totalPurr;
         }
-    }
-
-    void StartGame() {
-        startScreen.transform.Find("Start Button").gameObject.GetComponent<Button>().onClick.RemoveAllListeners();
-        startScreen.SetActive(false);
-        TimeManager.UnpauseTime();
     }
 
     public static void AddCatStats(int purrToAdd) {

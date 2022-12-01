@@ -6,8 +6,8 @@ using UnityEngine.UI;
 
 public class TimeManager : MonoBehaviour
 {
-    public static float time = 7.0f;
-    public static string timeString = "7:00 AM";
+    public static float time = 5.0f;
+    public static string timeString = "5:00 AM";
     public static TimeOfDay timeOfDay = TimeOfDay.Morning;
     static float secondTimer = 0.0f;
     public static float lengthOfQuarterHour = 2.0f;
@@ -48,7 +48,7 @@ public class TimeManager : MonoBehaviour
                 } else if (time >= 12.0f && time < 18.0f) {
                     timeOfDay = TimeOfDay.Day;
                     mainCamera.backgroundColor = new Color(0.3411765f, 0.282353f, 0.3215686f);
-                } else if (time >= 18.0f && time < 23.25f) {
+                } else if (time >= 18.0f && time < 21.5f) {
                     timeOfDay = TimeOfDay.Evening;
                     mainCamera.backgroundColor = new Color(0.3411765f, 0.282353f, 0.3215686f);
                 } else {

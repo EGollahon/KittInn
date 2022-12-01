@@ -19,6 +19,7 @@ public class BedController : MonoBehaviour
     void Start()
     {
         promptManager = promptManagerReference.GetComponent<PromptManager>();
+        Sleep();
     }
 
     void Update()
@@ -47,7 +48,7 @@ public class BedController : MonoBehaviour
             fastForwardPrompt.transform.Find("Description").gameObject.GetComponent<TextMeshProUGUI>().text = "Fast Forward";
 
             bea.GetComponent<PlayerController>().isSleeping = false;
-            bea.transform.position = new Vector2(-10.19f, -4.0f);
+            bea.transform.position = new Vector2(-10.19f, -1.2f);
             bea.GetComponent<Animator>().SetBool("IsSleeping", false);
             gameObject.layer = LayerMask.NameToLayer("Default");
             promptManager.OpenNotebookPrompt();

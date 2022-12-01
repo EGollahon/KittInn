@@ -17,6 +17,7 @@ public class CarrierController : MonoBehaviour
     public float leaveTimer = -1.0f;
 
     public GameObject bea;
+    public GameObject backUpBea;
     public GameObject carrierSpot;
     public GameObject leaveZone;
 
@@ -92,6 +93,9 @@ public class CarrierController : MonoBehaviour
         }
 
         if (isPickedUp) {
+            if (bea == null) {
+                bea = backUpBea;
+            }
             if (bea.GetComponent<PlayerController>().lookDirection == new Vector2(0.0f, -1.0f)) {
                 carrierRenderer.sprite = forwardSprite;
                 carrierRenderer.flipX = false;
@@ -217,6 +221,7 @@ public class CarrierController : MonoBehaviour
             alertFrame.SetActive(false);
             isArriving = false;
             bea = null;
+            transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
             promptManager.OpenNotebookPrompt();
             TimeManager.ExitEditMode();
         } else if (isCatInside && isLeaving && leaveZone != null) {
@@ -281,9 +286,17 @@ public class CarrierController : MonoBehaviour
             && !isPickedUp && !isWaitingForCat
         ) {
             bea = collider.gameObject;
+            backUpBea = collider.gameObject;
             promptManager = collider.gameObject.GetComponent<PlayerController>().promptManagerReference.GetComponent<PromptManager>();
             transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(true);
             canPickUp = true;
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D collider)
+    {
+        if (collider.gameObject.tag == "Bea" && isPickedUp) {
+            transform.Find("Canvas/PickUp Tooltip").gameObject.SetActive(false);
         }
     }
 

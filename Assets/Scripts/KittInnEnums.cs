@@ -117,7 +117,9 @@ public enum Activity {
     Checking,
     WaitingForUses,
     WaitingForUnoccupied,
-    WaitingForPets
+    WaitingForPets,
+    WaitingForBea,
+    Talking
 }
 
 public enum CatName {

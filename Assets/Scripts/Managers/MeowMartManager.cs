@@ -64,15 +64,21 @@ public class MeowMartManager : MonoBehaviour
             meowMartSlots[i].SetActive(false);
         }
 
-        int usedSlots = 0;
-        for (int i = 0; i < inventoryManager.inventory.Count; i++)
-        {
-            if ((isBuying && KittInnManager.level >= inventoryManager.inventory[i].level) || inventoryManager.inventory[i].quantity > 0) {
-                int itemIndex = i;
-                meowMartSlots[usedSlots].GetComponent<Button>().onClick.AddListener(() => ShowMeowMartDetail(inventoryManager.inventory[itemIndex]));
-                meowMartSlots[usedSlots].transform.Find("Item").gameObject.GetComponent<Image>().sprite = inventoryManager.inventory[itemIndex].sprite;
-                meowMartSlots[usedSlots].SetActive(true);
-                usedSlots += 1;
+        if (CompanionController.isInTutorial) {
+            meowMartSlots[0].GetComponent<Button>().onClick.AddListener(() => ShowMeowMartDetail(inventoryManager.inventory[11]));
+            meowMartSlots[0].transform.Find("Item").gameObject.GetComponent<Image>().sprite = inventoryManager.inventory[11].sprite;
+            meowMartSlots[0].SetActive(true);
+        } else {
+            int usedSlots = 0;
+            for (int i = 0; i < inventoryManager.inventory.Count; i++)
+            {
+                if ((isBuying && KittInnManager.level >= inventoryManager.inventory[i].level) || inventoryManager.inventory[i].quantity > 0) {
+                    int itemIndex = i;
+                    meowMartSlots[usedSlots].GetComponent<Button>().onClick.AddListener(() => ShowMeowMartDetail(inventoryManager.inventory[itemIndex]));
+                    meowMartSlots[usedSlots].transform.Find("Item").gameObject.GetComponent<Image>().sprite = inventoryManager.inventory[itemIndex].sprite;
+                    meowMartSlots[usedSlots].SetActive(true);
+                    usedSlots += 1;
+                }
             }
         }
     }

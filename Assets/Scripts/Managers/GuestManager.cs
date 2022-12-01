@@ -49,7 +49,11 @@ public class GuestManager : MonoBehaviour
             && takingRequests && currentGuests.Count < 13
             && selectedCat != null
         ) {
-            AcceptCat();
+            if (CompanionController.isInTutorial) {
+                AcceptCat(true);
+            } else {
+                AcceptCat(false);
+            }
         }
 
         if (TimeManager.time != currentTime) {
@@ -81,17 +85,18 @@ public class GuestManager : MonoBehaviour
                 }
             }
 
-            if (currentTime == 7.0f) {
+            if (currentTime == 7.0f && !CompanionController.isInTutorial) {
+                Debug.Log(requestedGuests.Count);
                 for (int i = 0; i < requestedGuests.Count; i++) {
                     DespawnCat(false, requestedGuests[i]);
                 }
                 if (KittInnManager.level == 1) {
                     for (int i = 0; i < 5; i++) {
-                        GenerateCat();
+                        GenerateCat(false);
                     }
                 } else {
                     for (int i = 0; i < 13; i++) {
-                        GenerateCat();
+                        GenerateCat(false);
                     }
                 }
             }
@@ -236,7 +241,7 @@ public class GuestManager : MonoBehaviour
         }
     }
 
-    void GenerateCat() {
+    public void GenerateCat(bool isFirst) {
         CatName newCatName;
         CoatColor newCoat;
         Personality newPersonality;
@@ -260,7 +265,11 @@ public class GuestManager : MonoBehaviour
             newFavFood = (Food)Random.Range(3, 6);
         }
 
-        newStayLength = Random.Range(1, 6);
+        if (isFirst) {
+            newStayLength = 1;
+        } else {
+            newStayLength = Random.Range(1, 6);
+        }
 
         GameObject newCarrier = Instantiate(carrierPrefab, new Vector2(0.5f, -10.52f), Quaternion.identity);
         GameObject newCat = Instantiate(catPrefab, new Vector2(0.5f, -10.52f), Quaternion.identity);
@@ -290,29 +299,36 @@ public class GuestManager : MonoBehaviour
         }
         Destroy(cat.GetComponent<CatController>().carrier);
         Destroy(cat);
+        RefreshGuests();
+        RefreshGuestsDetail();
     }
 
-    void AcceptCat() {
+    void AcceptCat(bool isFirst) {
         currentGuests.Add(selectedCat.gameObject);
         requestedGuests.Remove(selectedCat.gameObject);
 
         float newArrivalTime;
-        do {
-            newArrivalTime = GetRandomTime(true);
-        } while (currentGuests.Exists(
-            e => (!e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().arrivalTime == newArrivalTime)
-                || (e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().checkOutTime == newArrivalTime
-                    && (e.GetComponent<CatController>().daysLeft == 0 || e.GetComponent<CatController>().daysLeft == 1)
-                )
-        ));
-
         float newCheckOutTime;
-        do {
-            newCheckOutTime = GetRandomTime(false);
-        } while (currentGuests.Exists(
-            e => e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().checkOutTime == newArrivalTime
-                && (e.GetComponent<CatController>().daysLeft == selectedCat.daysLeft || e.GetComponent<CatController>().daysLeft == selectedCat.daysLeft + 1)
-        ));
+        if (isFirst) {
+            newArrivalTime = 8.0f;
+            newCheckOutTime = 8.0f;
+        } else {
+            do {
+                newArrivalTime = GetRandomTime(true);
+            } while (currentGuests.Exists(
+                e => (!e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().arrivalTime == newArrivalTime)
+                    || (e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().checkOutTime == newArrivalTime
+                        && (e.GetComponent<CatController>().daysLeft == 0 || e.GetComponent<CatController>().daysLeft == 1)
+                    )
+            ));
+
+            do {
+                newCheckOutTime = GetRandomTime(false);
+            } while (currentGuests.Exists(
+                e => e.GetComponent<CatController>().isCheckedIn && e.GetComponent<CatController>().checkOutTime == newArrivalTime
+                    && (e.GetComponent<CatController>().daysLeft == selectedCat.daysLeft || e.GetComponent<CatController>().daysLeft == selectedCat.daysLeft + 1)
+            ));
+        }
 
         selectedCat.arrivalTime = newArrivalTime;
         selectedCat.checkOutTime = newCheckOutTime;

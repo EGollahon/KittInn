@@ -19,7 +19,7 @@ public class DialogManager : MonoBehaviour
     public int currentDialogIndex = 0;
     public DialogClass currentDialog;
     public int currentDialogLength = 1;
-    public float letterLength = 0.03f;
+    public float letterLength = 0.005f;
     public bool canContinue = false;
 
     void Start()
@@ -57,6 +57,7 @@ public class DialogManager : MonoBehaviour
     }
 
     public void EndDialog() {
+        canContinue = false;
         TimeManager.UnpauseTime();
         promptManager.OpenNotebookPrompt();
         promptsUI.SetActive(true);

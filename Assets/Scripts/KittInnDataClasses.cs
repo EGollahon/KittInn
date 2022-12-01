@@ -24,13 +24,17 @@ public class InventoryItemClass
 [System.Serializable]
 public class QuestEntryClass
 {
-    public string itemName;
-    public Sprite sprite;
-    public int quantity;
-    public int level;
-    public int buyCost;
-    public int sellCost;
-    public InventoryType type;
+    public string title;
+    public string description;
+    public bool isLevelUpQuest;
+    public bool isRewardMoney;
+    public int rewardMoney;
+    public string rewardItem;
+    public int rewardItemQuantity;
+
+    public bool isShown;
+    public bool isCompleted;
+    public string questDependentOn;
 }
 
 [System.Serializable]

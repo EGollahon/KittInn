@@ -19,7 +19,7 @@ public class CatController : MonoBehaviour
     public Status status = Status.Content;
     public Status lastStatus = Status.Content;
     public int purr = 50;
-    public Activity activity;
+    public Activity activity = Activity.Waiting;
     public GameObject interactingWith;
     public int dailyFeedings = 2;
 
@@ -627,7 +627,7 @@ public class CatController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == "Bea")
+        if (collider.gameObject.tag == "Bea" && activity != Activity.BeingPetted)
         {
             RefreshTooltip();
             transform.Find("Canvas/Cat Tooltip").gameObject.SetActive(true);

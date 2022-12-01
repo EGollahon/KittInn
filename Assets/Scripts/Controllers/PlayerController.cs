@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
                 playerAnimator.SetBool("IsWalking", false);
             }
         } else if (isPetting) {
-            if (catInRange.GetComponent<CatController>().activity != Activity.WaitingForPets && catInRange.GetComponent<CatController>().activity != Activity.BeingPetted) {
+            if (catInRange == null || (catInRange.GetComponent<CatController>().activity != Activity.WaitingForPets && catInRange.GetComponent<CatController>().activity != Activity.BeingPetted)) {
                 isPetting = false;
                 playerAnimator.SetBool("IsPetting", false);
                 promptManager.CatRoomsPrompts();

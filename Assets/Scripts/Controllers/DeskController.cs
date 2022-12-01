@@ -6,6 +6,7 @@ public class DeskController : MonoBehaviour
 {
     public GameObject promptManagerReference;
     PromptManager promptManager;
+    public bool isEnabled = false;
 
     void Start()
     {
@@ -14,7 +15,7 @@ public class DeskController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == "Bea")
+        if (collider.gameObject.tag == "Bea" && isEnabled)
         {
             promptManager.OpenComputerPrompt();
         }
@@ -22,7 +23,7 @@ public class DeskController : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D collider)
     {
-        if (collider.gameObject.tag == "Bea")
+        if (collider.gameObject.tag == "Bea" && isEnabled)
         {
             promptManager.OpenNotebookPrompt();
         }
