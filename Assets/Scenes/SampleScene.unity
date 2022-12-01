@@ -20186,6 +20186,7 @@ MonoBehaviour:
   catRoomsDoor: {fileID: 2043264135}
   sunroomDoor: {fileID: 20454049}
   sunroomBlock: {fileID: 1230881413}
+  pixie: {fileID: 0}
 --- !u!1 &1245995968
 GameObject:
   m_ObjectHideFlags: 0
