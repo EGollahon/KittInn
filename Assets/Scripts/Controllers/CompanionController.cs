@@ -61,6 +61,7 @@ public class CompanionController : MonoBehaviour
         catAnimator.SetFloat("Look X", 0.0f);
         catAnimator.SetFloat("Look Y", -1.0f);
         catAnimator.SetBool("IsMoving", false);
+        catAnimator.SetBool("IsFairy", false);
     }
 
     void Update()
@@ -238,6 +239,10 @@ public class CompanionController : MonoBehaviour
         tile.fScore = tile.gScore + tile.hScore;
 
         return tile;
+    }
+
+    public void FairyCat() {
+        catAnimator.SetBool("IsFairy", true);
     }
 
     void StartGame() {

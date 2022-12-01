@@ -21,6 +21,7 @@ public class KittInnManager : MonoBehaviour
     public GameObject catRoomsDoor;
     public GameObject sunroomDoor;
     public GameObject sunroomBlock;
+    public GameObject pixie;
 
     void Awake()
     {
@@ -37,6 +38,7 @@ public class KittInnManager : MonoBehaviour
                 sunroomDoor.GetComponent<DoorController>().isUnlocked = true;
             } else if (level == 2 && totalPurr >= purrNeededForLevel3) {
                 level = 3;
+                pixie.GetComponent<CompanionController>().FairyCat();
             }
             RecalculateStats();
             lastPurr = totalPurr;
